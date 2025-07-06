@@ -1,5 +1,5 @@
 ---
-description: Enhanced research status with smart continuation, parallel processing, and predictive analytics
+description: Continue research session and track progress through phases
 allowed-tools:
   - Read
   - Write
@@ -8,478 +8,335 @@ allowed-tools:
   - WebSearch
   - WebFetch
   - Task
-  - mcp__memory__create_memory
-  - mcp__memory__search_memory
-  - mcp__memory__update_memory
-  - mcp__sequentialthinking__start_thinking
-  - mcp__sequentialthinking__continue_thinking
-  - mcp__sequentialthinking__finish_thinking
 ---
 
-# Enhanced Research Status
+# Research Status & Continue
 
-Show current research session progress and continue with optimized workflow.
-
-## 🚀 Enhanced Features
-- **Auto-Phase Transitions**: Smart quality gates with automatic advancement
-- **Parallel Processing**: Concurrent search and extraction (5x faster)
-- **Predictive Analytics**: Completion time estimation and optimization suggestions
-- **Persistent Learning**: Remember successful strategies and user preferences across sessions
-- **Sequential Analysis**: Deep thinking for complex research decisions and strategy optimization
-- **Smart Recommendations**: AI-powered next steps based on current progress and historical patterns
+Show current research session progress and continue workflow.
 
 ## Description
 
 This command displays the status of your active research session, shows current progress through the four phases, and continues from where you left off. It provides a clear view of completed work and next steps.
 
-## Instructions
+## Implementation
 
-1. **Check for Active Session**
-   - Read `.deep-research/.current-research` file in user's current directory
-   - If file doesn't exist or is empty:
-     - Show message: "No active research session"
-     - Suggest using `/research-start` to begin new research
-     - List available research sessions with `/research-list`
-     - Exit
-
-2. **Load Session Data with Memory Enhancement**
-   - Parse `.deep-research/.current-research` to get session ID
-   - Construct session metadata path as `.deep-research/sessions/[SESSION_ID]/metadata.json`
-   - Read `metadata.json` from `.deep-research/sessions/[SESSION_ID]/` for current phase and progress in parallel
-   - **Memory Integration**: Load historical context, similar sessions, and user patterns from persistent memory
-   - **Learning Context**: Apply insights from previous successful research strategies
-   - If metadata.json doesn't exist, create it with default values:
-     ```json
-     {
-       "title": "[extracted from directory name]",
-       "created": "[session start timestamp]",
-       "last_updated": "[current timestamp]",
-       "phase": 1,
-       "phase_name": "Planning",
-       "progress": {
-         "planning_complete": false,
-         "gathering_complete": false,
-         "analysis_complete": false,
-         "report_complete": false
-       },
-       "current_action": "review_research_plan",
-       "next_steps": ["Review and approve research plan", "Proceed to Phase 2: Information Gathering"],
-       "completed_actions": [],
-       "total_sources": 0,
-       "findings_count": 0
-     }
-     ```
-
-3. **Display Formatted Status**
-   - Show current session information with progress indicators
-   - Display recent completed actions
-   - Show current phase and next steps
-   - Include session statistics and timing information
-
-4. **Determine Continuation Point**
-   - Based on phase and progress, identify where to resume
-   - Load appropriate files and continue workflow
-   - Update metadata with continuation timestamp
-
-## Status Display Format
-
+### 1. Check for Active Session
 ```
-🔬 Active Research Session: [Session Title]
-Started: [X hours/days ago] | Last updated: [X minutes/hours ago]
-Phase: [X/4] [Phase Name] | Progress: [Status indicators]
-
-📊 Session Statistics:
-• Sources collected: [X]
-• Findings documented: [X]
-• Current action: [Action description]
-
-✅ Recent Progress:
-• [Most recent completed action with timestamp]
-• [Second most recent action with timestamp]
-• [Third most recent action with timestamp]
-
-🎯 Current Phase: [Phase Name]
-Status: [Phase-specific status description]
-
-⏭️ Next Steps:
-[Numbered list of immediate next actions]
-
-───────────────────────────────────────────────────────────
-
-[Phase-specific continuation prompt or question]
+ACTIVE_SESSION_FILE = ".deep-research/.current-research"
+if not file_exists(ACTIVE_SESSION_FILE):
+    display("❌ No active research session found")
+    display("💡 Use /research-start [question] to begin new research")
+    display("📋 Use /research-list to see all available sessions")
+    exit
 ```
 
-### Phase-Specific Status Indicators
+### 2. Load Session Data
+```
+SESSION_ID = read_file(ACTIVE_SESSION_FILE).strip()
+if empty(SESSION_ID):
+    error("No active session ID found")
+    exit
 
-**Phase 1 - Planning:**
-```
-Progress: 📋 Planning [⏳ In Progress | ✅ Complete]
-```
+METADATA_FILE = ".deep-research/sessions/" + SESSION_ID + "/metadata.json"
+if not file_exists(METADATA_FILE):
+    error("Session metadata not found for: " + SESSION_ID)
+    exit
 
-**Phase 2 - Information Gathering:**
-```
-Progress: 📋 Planning ✅ | 🔍 Gathering [⏳ In Progress | ✅ Complete]
-Sources: [X/target] collected
-```
-
-**Phase 3 - Analysis:**
-```
-Progress: 📋 Planning ✅ | 🔍 Gathering ✅ | 📊 Analysis [⏳ In Progress | ✅ Complete]
-Findings: [X] documented
+METADATA = parse_json(read_file(METADATA_FILE))
 ```
 
-**Phase 4 - Report Generation:**
+### 3. Display Current Status
 ```
-Progress: 📋 Planning ✅ | 🔍 Gathering ✅ | 📊 Analysis ✅ | 📄 Report [⏳ In Progress | ✅ Complete]
+display("🔬 RESEARCH SESSION: " + SESSION_ID)
+display("❓ Question: " + METADATA.question)
+display("📊 Phase: " + METADATA.phase + " | Status: " + METADATA.status)
+display("🕐 Started: " + METADATA.started)
+display("📚 Sources collected: " + METADATA.sourcesCollected)
+display("🎯 Sub-questions: " + METADATA.subQuestions)
 ```
 
-**All Phases Complete:**
+### 4. Continue Based on Current Phase
 ```
-Progress: 📋 Planning ✅ | 🔍 Gathering ✅ | 📊 Analysis ✅ | 📄 Report ✅
-Status: 🎉 Research Complete
+switch METADATA.phase:
+    case "planning":
+        continue_planning_phase()
+    case "gathering": 
+        continue_gathering_phase()
+    case "analysis":
+        continue_analysis_phase()
+    case "report":
+        continue_report_phase()
+    default:
+        error("Unknown phase: " + METADATA.phase)
 ```
 
-## Continuation Flow
+## Phase Implementations
 
-### Phase 1 - Planning
-- **If planning incomplete:**
-  - Load `[SESSION_ID]-plan.md` if exists
-  - Show research plan review prompt
-  - Ask for approval to proceed to Phase 2
-  - Update metadata on approval
+### Planning Phase
+```
+function continue_planning_phase():
+    PLAN_FILE = SESSION_ID + "-plan.md"
+    if not file_exists(PLAN_FILE):
+        display("⚠️  Research plan not found. Creating new plan...")
+        execute_research_planning()
+        write_file(PLAN_FILE, RESEARCH_PLAN)
+        
+    display("📋 Research plan exists: " + PLAN_FILE)
+    APPROVAL = prompt("Review plan and proceed to information gathering?", ["yes", "review"], "yes")
+    
+    if APPROVAL == "yes":
+        update_metadata({phase: "gathering"})
+        update_todo_status("Information Gathering", "in_progress")
+        display("▶️  Moving to information gathering phase")
+        continue_gathering_phase()
+    else:
+        display("Plan ready for review. Run /research-status again when ready to proceed.")
+```
 
-- **If planning complete:**
-  - Show plan summary
-  - Ask Phase 2 clarifying questions before transitioning
-  - Transition to Phase 2 after questions answered
+### Gathering Phase  
+```
+function continue_gathering_phase():
+    PLAN_FILE = SESSION_ID + "-plan.md"
+    PLAN_CONTENT = read_file(PLAN_FILE)
+    SUB_QUESTIONS = extract_sub_questions(PLAN_CONTENT)
+    
+    display("📚 Information Gathering Phase")
+    display("📝 Sub-questions: " + count(SUB_QUESTIONS))
+    
+    SOURCE_COUNT = count_sources("sources/")
+    display("📄 Sources collected: " + SOURCE_COUNT)
+    
+    if SOURCE_COUNT < 15:
+        display("🔍 Collecting more sources...")
+        collect_sources_for_questions(SUB_QUESTIONS)
+    else:
+        display("✅ Sufficient sources collected")
+        PROCEED = prompt("Proceed to analysis phase?", ["yes", "collect_more"], "yes")
+        
+        if PROCEED == "yes":
+            update_metadata({phase: "analysis"})
+            update_todo_status("Analysis & Synthesis", "in_progress")
+            continue_analysis_phase()
+        else:
+            collect_sources_for_questions(SUB_QUESTIONS)
+```
 
-### Phase 2 - Information Gathering with Sequential Thinking
-- **If gathering in progress:**
-  - Load `sources/source-inventory.md` if exists
-  - Show current source count and gaps
-  - **Memory-Enhanced Strategy**: Recall successful search strategies from similar research
-  - **Sequential Planning**: Use deep thinking to optimize search approach
-  
-  ```
-  // Use Sequential Thinking for optimal search strategy
-  start_thinking("Optimizing information gathering for current sub-question")
-  
-  continue_thinking("""
-  Based on the current research progress and historical patterns from memory:
-  1. What are the most effective search strategies for this domain?
-  2. Which source types have provided highest quality results previously?
-  3. How can I optimize parallel searches to avoid redundancy?
-  4. What quality indicators should I prioritize?
-  5. How can I ensure comprehensive coverage while maintaining efficiency?
-  """)
-  
-  SEARCH_STRATEGY = finish_thinking()
-  update_memory("search_optimization", SEARCH_STRATEGY)
-  ```
-  
-  - Continue with next sub-question from research plan
-  - Transform into meticulous research assistant specializing in systematic information gathering.
-    Your role is to collect comprehensive, high-quality sources based on the approved research plan.
+### Analysis Phase
+```
+function continue_analysis_phase():
+    SOURCES_DIR = "sources/"
+    SOURCE_FILES = list_files(SOURCES_DIR, "*.md")
     
-    For ALL sub-questions in the research plan:
+    display("🔍 Analysis & Synthesis Phase")
+    display("📊 Analyzing " + count(SOURCE_FILES) + " sources")
     
-    A. Enhanced Parallel Search Phase - Intelligent batching with quality optimization:
-    [Use multiple tool calls in a single response - up to 5 parallel searches with smart retry]
-    - Auto-detect optimal search terms using AI analysis of sub-questions
-    - Prioritize recent content (within last 2-3 years unless historical context needed)
-    - Authoritative sources (edu, gov, established publications) with credibility scoring
-    - Diverse perspectives (academic, industry, news, expert opinions) with bias detection
-    - Open access content (avoid paywalls when possible) with fallback strategies
+    FINDINGS_FILE = SESSION_ID + "-findings.md"
+    if not file_exists(FINDINGS_FILE):
+        display("📝 Creating findings document...")
+        analyze_sources_and_create_findings(SOURCE_FILES)
+        write_file(FINDINGS_FILE, FINDINGS_CONTENT)
     
-    B. Optimized Parallel Content Extraction - Quality-first concurrent fetching:
-    [Use multiple WebFetch calls simultaneously - up to 5 at once with error recovery]
-    - Extract all relevant information about specific sub-questions with AI summarization
-    - Include statistics, quotes, examples, publication date and author with validation
-    - Focus on specific aspects for each sub-question with relevance scoring
-    - Extract methodology and key findings with quality assessment
-    - Note limitations and bias indicators with confidence levels
-    - Implement automatic retry with exponential backoff for failed fetches
+    display("✅ Analysis complete: " + FINDINGS_FILE)
+    PROCEED = prompt("Proceed to report generation?", ["yes", "review"], "yes")
     
-    C. Save Sources with descriptive filenames:
-    Format: [source-number]-[domain]-[brief-title].md
-    Example: 01-mit-edu-ai-coding-productivity-study.md
-    
-    Each source should include:
-    - Full title, URL, dates, author, type
-    - Relevance to sub-questions
-    - Full extracted content
-    - 2-3 bullet points of key information
-    
-    Search Best Practices:
-    - Use quotation marks for exact phrases
-    - Combine related terms with OR/AND operators
-    - Add site restrictions: site:edu OR site:gov
-    - Exclude unwanted results: -advertisement -sponsored
-    - Use date filters when relevant
-    
-    Quality Indicators:
-    - Citations and references
-    - Author credentials
-    - Publication reputation
-    - Data with sources
-    - Balanced perspective
-    - Recent updates
-  - Present parallel WebSearch and WebFetch prompts for next sources (up to 5 concurrent)
+    if PROCEED == "yes":
+        update_metadata({phase: "report"})
+        update_todo_status("Report Generation", "in_progress")
+        continue_report_phase()
+```
 
-- **If gathering complete:**
-  - Show source collection summary
-  - Ask Phase 3 clarifying questions before transitioning
-  - Transition to Phase 3 after questions answered
+### Report Phase
+```
+function continue_report_phase():
+    FINDINGS_FILE = SESSION_ID + "-findings.md"
+    REPORT_FILE = SESSION_ID + "-report.html"
+    
+    display("📄 Report Generation Phase")
+    
+    if not file_exists(REPORT_FILE):
+        display("📝 Creating final report...")
+        FINDINGS = read_file(FINDINGS_FILE)
+        REPORT_CONTENT = generate_html_report(FINDINGS, METADATA)
+        write_file(REPORT_FILE, REPORT_CONTENT)
+    
+    display("✅ Report generated: " + REPORT_FILE)
+    display("🎉 Research session complete!")
+    
+    FINALIZE = prompt("Finalize session?", ["yes", "continue"], "yes")
+    if FINALIZE == "yes":
+        update_metadata({status: "completed"})
+        update_todo_status("Report Generation", "completed")
+        display("Session completed successfully!")
+```
 
-### Phase 3 - Analysis
-- **If analysis in progress:**
-  - Load all sources from `sources/` directory in parallel
-  - Show current findings progress
-  - Continue analysis from last documented finding
-  - ## ultrathink
-    Source analysis and synthesis requires deep analytical thinking to identify patterns, reconcile contradictions, extract meaningful insights, and construct coherent arguments from disparate information sources.
-    
-    Transform into expert research analyst specializing in synthesizing complex information from multiple sources.
-    Your role is to transform raw research materials into coherent, insightful analysis that addresses the original research questions.
-    
-    For Each Sub-Question:
-    
-    1. Extract Key Findings
-    - Identify 3-5 most relevant findings per source
-    - Note specific data points, statistics, or expert quotes
-    - Distinguish between facts, opinions, and speculation
-    - Record the source file for each finding
-    
-    2. Identify Patterns and Themes
-    - Look for recurring concepts across sources
-    - Note consensus views vs. divergent opinions
-    - Identify emerging trends or shifts over time
-    - Map relationships between different findings
-    
-    3. Detect Contradictions and Gaps
-    - Flag conflicting information between sources
-    - Note missing information or unanswered aspects
-    - Identify potential biases or limitations in sources
-    - Record areas needing further investigation
-    
-    4. Assess Source Quality
-    - Consider recency and relevance of each source
-    - Note authority and expertise of authors
-    - Evaluate methodology where applicable
-    - Flag any concerns about reliability
-    
-    Synthesis Process:
-    - Cross-reference findings across sub-questions
-    - Identify overarching themes
-    - Build coherent narrative
-    - Move beyond summarization to interpretation
-    - Draw meaningful conclusions from evidence
-    - Maintain academic rigor with citations
-    - Present balanced, objective analysis
-  - Present analysis prompts for remaining sources
+## Source Collection Process
 
-- **If analysis complete:**
-  - Show findings summary
-  - Ask Phase 4 clarifying questions before transitioning
-  - Transition to Phase 4 after questions answered
+### Collect Sources for Questions
+```
+function collect_sources_for_questions(SUB_QUESTIONS):
+    for each question in SUB_QUESTIONS:
+        display("🔍 Researching: " + question.text)
+        
+        SEARCH_RESULTS = web_search(question.search_strategy)
+        PROMISING_SOURCES = filter_top_sources(SEARCH_RESULTS, 3)
+        
+        for each source in PROMISING_SOURCES:
+            SOURCE_CONTENT = web_fetch(source.url)
+            SOURCE_FILE = create_source_file(SOURCE_CONTENT, source)
+            write_file("sources/" + SOURCE_FILE, SOURCE_CONTENT)
+            
+        increment_source_count(METADATA)
+        
+    display("📚 Source collection complete")
+```
 
-### Phase 4 - Report Generation
-- **If report in progress:**
-  - Load `[SESSION_ID]-findings.md` and source data
-  - Show current report status
-  - Continue report generation from last section
-  - ## ultrathink
-    Report generation requires careful structuring to transform analytical findings into a polished, accessible, and visually appealing presentation that effectively communicates research insights.
+### Source File Creation
+```
+function create_source_file(content, source):
+    SOURCE_ID = get_next_source_id()
+    FILENAME = "source-" + pad_zeros(SOURCE_ID, 3) + "-" + 
+               create_slug(source.title) + ".md"
     
-    Transform into professional report writer specializing in creating comprehensive, interactive research reports.
-    Your role is to transform analytical findings into a polished HTML report using Claude Artifacts.
+    FORMATTED_CONTENT = format_source_content(content, source)
+    return {filename: FILENAME, content: FORMATTED_CONTENT}
+```
+
+## Analysis Process
+
+### Analyze Sources and Create Findings
+```
+function analyze_sources_and_create_findings(SOURCE_FILES):
+    FINDINGS = {
+        overview: "",
+        key_findings: [],
+        sub_question_answers: [],
+        citations: []
+    }
     
-    Content Structure:
-    1. Title Page - Research topic, date, executive summary, table of contents
-    2. Introduction - Context, objectives, methodology, scope
-    3. Key Findings - Organized by research question with visual hierarchy
-    4. Detailed Analysis - Comprehensive coverage with citations
-    5. Conclusions - Synthesis, implications, recommendations
-    6. References - Complete bibliography with clickable links
+    for each source_file in SOURCE_FILES:
+        SOURCE_CONTENT = read_file(source_file)
+        ANALYSIS = analyze_source_content(SOURCE_CONTENT)
+        FINDINGS.key_findings.append(ANALYSIS.insights)
+        FINDINGS.citations.append(ANALYSIS.citation)
     
-    Visual Design Requirements:
-    - Professional CSS styling with responsive design
-    - Interactive collapsible sections
-    - Smooth scroll navigation
-    - High contrast and semantic HTML for accessibility
+    FINDINGS.overview = synthesize_overview(FINDINGS.key_findings)
+    FINDINGS.sub_question_answers = answer_sub_questions(FINDINGS.key_findings)
     
-    Citation Format:
-    - Use numbered superscript citations [1]
-    - Include author, title, source, date
-    - Link to original sources where possible
+    return format_findings_document(FINDINGS)
+```
+
+## Report Generation
+
+### Generate HTML Report
+```
+function generate_html_report(findings, metadata):
+    REPORT_TEMPLATE = load_html_template()
     
-    Special Sections:
-    - Methodology box explaining research approach
-    - Key insights highlights with confidence levels
-    - Limitations section for transparency
-    - Interactive elements for enhanced usability
-  - Create HTML artifact with identifier: research-report-[topic]
-  - Present final report compilation prompts
+    REPORT_DATA = {
+        title: derive_title(metadata.question),
+        question: metadata.question,
+        session_id: metadata.id,
+        date: current_date(),
+        findings: findings,
+        sources: load_source_inventory(),
+        citations: extract_citations(findings)
+    }
+    
+    return populate_template(REPORT_TEMPLATE, REPORT_DATA)
+```
 
-- **If report complete:**
-  - Show completion summary
-  - Offer options: view report, start new research, archive session
+## Utility Functions
 
-## Phase Transitions
+### Update Metadata
+```
+function update_metadata(updates):
+    METADATA_FILE = ".deep-research/sessions/" + SESSION_ID + "/metadata.json"
+    CURRENT_METADATA = parse_json(read_file(METADATA_FILE))
+    
+    for key, value in updates:
+        CURRENT_METADATA[key] = value
+    
+    write_json(METADATA_FILE, CURRENT_METADATA)
+```
 
-### Planning → Gathering (Enhanced Auto-Transition)
-**Trigger:** Research plan approved by user OR quality threshold met automatically
-**Auto-Quality Check:** Plan completeness ≥ 80%, sub-questions ≥ 5, search strategies defined
-**Actions:**
-1. **Smart Phase 2 Setup** - Adaptive questioning based on research domain:
-   - Auto-detect research domain (academic/business/technical/general)
-   - Apply domain-specific source preferences automatically
-   - Ask 1-2 targeted questions only if ambiguity detected:
-     * "Source preference: Academic-heavy or Balanced? [Auto: Balanced]"
-     * "Geographic focus needed? [Auto: Global]"
-   - Skip questions if confidence > 85% in auto-selection
-2. **Intelligent Transition:**
-   - Auto-save phase transition with timestamp
-   - Update metadata: `phase: 2, phase_name: "Information Gathering", auto_advanced: true`
-   - Pre-validate directories and create missing structure
-   - Generate optimized search queue based on priority ranking
-3. **Enhanced Setup:**
-   ```markdown
-   # Source Inventory
-   
-   **Total Sources Collected**: 0
-   **Date**: [Today's date]
-   
-   ## Sources by Sub-Question
-   
-   ### Sub-Question 1: [Question from plan]
-   [To be populated]
-   
-   ### Sub-Question 2: [Question from plan]
-   [To be populated]
-   
-   [Continue for all sub-questions]
-   
-   ## Source Quality Summary
-   - Academic sources: 0
-   - Industry reports: 0
-   - News articles: 0
-   - Technical documentation: 0
-   - Other: 0
-   
-   ## Coverage Assessment
-   - Well-covered topics: [To be identified]
-   - Gaps identified: [To be identified]
-   - Potential biases noted: [To be identified]
-   ```
-6. Set `current_action: "collect_sources"`
-7. Load first sub-question from research plan
-
-### Gathering → Analysis
-**Trigger:** Sufficient sources collected (minimum 10-15 sources)
-**Actions:**
-1. Ask Phase 3 clarifying questions:
-   - Q1: Should I focus on recent developments or include historical context?
-   - Q2: Do you want detailed technical analysis or high-level insights?
-   - Q3: Should I highlight areas of consensus or disagreement among sources?
-   - Allow user to skip or answer each question
-2. Save answers to `[SESSION_ID]-phase3-answers.md`
-3. Update metadata: `phase: 3, phase_name: "Analysis"`
-4. Set `current_action: "analyze_sources"`
-5. Create `[SESSION_ID]-findings.md` with template:
-   ```markdown
-   # Analysis: [Research Topic]
-   
-   ## Executive Summary
-   [2-3 paragraph overview of key findings and insights]
-   
-   ## Detailed Analysis by Research Question
-   
-   ### Question 1: [Original sub-question]
-   
-   #### Key Findings
-   - **Finding 1**: [Description] (Source: [filename])
-     - Supporting evidence: [quote or data]
-     - Significance: [why this matters]
-   
-   #### Patterns and Insights
-   - [Pattern 1]: [Description of pattern across sources]
-   
-   #### Contradictions or Gaps
-   - [If any]: [Description] ([source1] vs [source2])
-   
-   [Repeat for each sub-question]
-   
-   ## Cross-Cutting Themes
-   
-   ### Theme 1: [Major theme across questions]
-   [Synthesis paragraph]
-   
-   ## Conclusions and Insights
-   
-   ### Primary Conclusions
-   1. [Major conclusion with evidence summary]
-   
-   ### Emerging Questions
-   - [New questions raised by the research]
-   
-   ### Limitations
-   - [Acknowledge any limitations in sources or analysis]
-   
-   ## Source Quality Assessment
-   [Brief paragraph on overall source quality]
-   
-   ## Next Steps
-   [Recommendations for report generation]
-   ```
-6. Load all collected sources for analysis
-
-### Analysis → Report
-**Trigger:** Findings document complete with all sub-questions addressed
-**Actions:**
-1. Ask Phase 4 clarifying questions:
-   - Q1: Who is the primary audience for this report?
-   - Q2: Should the report emphasize practical applications or theoretical insights?
-   - Q3: Do you want interactive elements like collapsible sections or charts?
-   - Allow user to skip or answer each question
-2. Save answers to `[SESSION_ID]-phase4-answers.md`
-3. Update metadata: `phase: 4, phase_name: "Report Generation"`
-4. Set `current_action: "generate_report"`
-5. Prepare report template with findings data
-6. Load citation data for final report
-
-### Report Complete
-**Trigger:** Final HTML report generated and reviewed
-**Actions:**
-1. Update metadata: `phase: 5, phase_name: "Complete"`
-2. Set `current_action: "session_complete"`
-3. Archive session data
-4. Clear `.deep-research/.current-research` file
+### Update Todo Status
+```
+function update_todo_status(task_name, new_status):
+    CURRENT_TODOS = read_todos()
+    for todo in CURRENT_TODOS:
+        if todo.content == task_name:
+            todo.status = new_status
+    write_todos(CURRENT_TODOS)
+```
 
 ## Error Handling
 
 ### Missing Files
-- If session directory doesn't exist: Show error and suggest starting new research
-- If critical files missing: Attempt to reconstruct from available data
-- If metadata corrupted: Rebuild from directory contents and file timestamps
+```
+if not file_exists(required_file):
+    warn("Missing file: " + required_file)
+    offer_recovery_options()
+```
 
-### Incomplete States
-- If phase indicators don't match file existence: Reconcile based on actual files
-- If progress seems inconsistent: Show warning and ask user to confirm current state
-- If multiple sessions active: Show conflict resolution options
+### Corrupted Session
+```
+if invalid_metadata(METADATA):
+    warn("Session metadata corrupted")
+    attempt_recovery()
+```
 
-## Metadata Updates
+### Phase Mismatch
+```
+if phase_files_inconsistent():
+    warn("Phase files inconsistent with metadata")
+    reconcile_session_state()
+```
 
-Always update metadata.json when:
-- Continuing from status check (update `last_updated`)
-- Completing phase transitions (update `phase`, `phase_name`, `progress`)
-- Completing major actions (add to `completed_actions`)
-- Collecting new sources (update `total_sources`)
-- Adding findings (update `findings_count`)
+## Progress Display
 
-## Integration Points
+### Status Summary
+```
+display("=" * 60)
+display("RESEARCH SESSION STATUS")
+display("=" * 60)
+display("Session: " + SESSION_ID)
+display("Question: " + METADATA.question)
+display("Phase: " + METADATA.phase + " (" + calculate_progress() + "% complete)")
+display("Sources: " + METADATA.sourcesCollected)
+display("Started: " + format_date(METADATA.started))
+display("=" * 60)
+```
 
-- **TodoWrite Integration:** Sync with todo list for phase tracking
-- **File System Integration:** Verify file existence matches metadata
-- **Web Research Integration:** Continue from last search patterns
-- **Citation Integration:** Maintain citation consistency across phases
+### Phase Progress
+```
+PHASES = ["planning", "gathering", "analysis", "report"]
+CURRENT_PHASE_INDEX = PHASES.index(METADATA.phase)
+
+for i, phase in enumerate(PHASES):
+    if i < CURRENT_PHASE_INDEX:
+        display("✅ " + phase.capitalize())
+    elif i == CURRENT_PHASE_INDEX:
+        display("⏳ " + phase.capitalize() + " (in progress)")
+    else:
+        display("⏸️  " + phase.capitalize() + " (pending)")
+```
+
+## Next Steps Display
+
+### Action Recommendations
+```
+display("🎯 NEXT STEPS:")
+switch METADATA.phase:
+    case "planning":
+        display("1. Review research plan")
+        display("2. Approve and proceed to gathering")
+    case "gathering":
+        display("1. Continue collecting sources")
+        display("2. Aim for 15-25 high-quality sources")
+    case "analysis":
+        display("1. Analyze collected sources")
+        display("2. Create findings document")
+    case "report":
+        display("1. Generate final report")
+        display("2. Review and finalize session")
+```
