@@ -1,63 +1,101 @@
-# Deep Research System Commands - Implementation Complete
+# Deep Research File Structure Modification - IMPLEMENTATION COMPLETE
 
-This document summarizes the complete implementation of the three remaining commands for the Deep Research System.
+## Summary
 
-## Commands Implemented
+Successfully implemented the requested file structure changes to modify Deep Research from using a centralized `sessions/` directory to using user-created directories with reusable sources.
 
-### 1. research-current.md - Detailed Session View
-**Purpose**: Provides comprehensive information about the active research session
-**Key Features**:
-- Complete session overview with progress metrics
-- Detailed phase-by-phase progress tracking
-- Source collection analysis with quality assessment
-- Sub-question progress breakdown
-- File status verification
-- Time tracking and research metrics
-- Phase-specific next steps and recommendations
+This document summarizes the complete implementation of the file structure modifications for the Deep Research System.
 
-**Display Components**:
-- Session header with ID, question, timestamps
-- Visual progress indicators for all phases
-- Research statistics and file status
-- Source quality analysis (Tier 1, 2, 3 distribution)
-- Coverage gaps and bias identification
-- Actionable next steps based on current phase
+## Key Changes Implemented
 
-### 2. research-list.md - Session Directory Overview
-**Purpose**: Displays all research sessions with status and navigation options
-**Key Features**:
-- Categorized session listing (Active, Completed, Paused, Abandoned)
-- Session summaries with key metrics
-- Progress indicators and status tracking
-- Filtering and sorting capabilities
-- Session management actions
-- Workspace statistics and organization tips
+### 1. **Directory Structure Transformation**
 
-**Display Components**:
-- Session summary statistics
-- Active sessions with current activity markers
-- Completed sessions with final metrics
-- Paused sessions with resumption options
-- Abandoned sessions with recovery options
-- Navigation commands and workspace management
+**Before (Old Structure):**
+```
+deep-research/
+└── sessions/
+    ├── .current-research
+    └── YYYY-MM-DD-HHMM-slug/
+        ├── metadata.json
+        ├── 01-plan.md
+        ├── 02-sources/
+        ├── 03-findings.md
+        └── 04-report.html
+```
 
-### 3. research-end.md - Session Finalization
-**Purpose**: Finalizes active research sessions with quality checks and archival
-**Key Features**:
-- Session completion analysis and validation
-- Multiple finalization options (Complete, Abandon, Continue, Force End)
-- Automatic final report generation
-- Quality assessment and gap identification
-- Session archival and cleanup
-- Comprehensive finalization summary
+**After (New Structure):**
+```
+[user-directory]/
+├── .deep-research/              # Hidden directory for session metadata
+│   ├── .current-research        # Active session tracker
+│   └── sessions/                # Session metadata storage
+│       └── [session-id]/
+│           └── metadata.json
+├── sources/                     # Shared source collection
+│   ├── source-001-*.md
+│   └── source-inventory.md
+├── [session-id]-plan.md         # Session-specific files
+├── [session-id]-findings.md
+└── [session-id]-report.html
+```
 
-**Display Components**:
-- Session completion analysis
-- Quality assessment results
-- File status verification
-- Finalization options with recommendations
-- Final report generation
-- Session cleanup and archival confirmation
+### 2. **Modified Command Files**
+
+Successfully updated all 5 Deep Research command files:
+
+#### ✅ `/commands/research-start.md`
+- Changed session directory creation from `sessions/[SESSION_ID]` to `.deep-research/sessions/[SESSION_ID]`
+- Updated global state file location to `.deep-research/.current-research`
+- Added source detection logic to find and validate existing sources
+- Modified file paths to use session ID prefixes (e.g., `[SESSION_ID]-plan.md`)
+- Added logic to create shared `sources/` directory
+
+#### ✅ `/commands/research-status.md`
+- Updated to read `.deep-research/.current-research` instead of `sessions/.current-research`
+- Modified session metadata path construction to use new structure
+- Updated source directory references from `02-sources/` to `sources/`
+- Changed file references to use session ID prefixes
+
+#### ✅ `/commands/research-current.md`
+- Updated session discovery to use `.deep-research/.current-research`
+- Modified file path construction for new directory structure
+- Updated file existence checks for session-specific files
+- Changed source directory references
+
+#### ✅ `/commands/research-list.md`
+- Modified session discovery to scan `.deep-research/sessions/` directory
+- Updated global state file location
+- Changed session directory scanning logic
+
+#### ✅ `/commands/research-end.md`
+- Updated session finalization to use new directory structure
+- Modified file path references for session-specific files
+- Updated archival structure documentation
+- Changed cleanup logic for new global state location
+
+### 3. **Legacy Prompt Update**
+
+#### ✅ `/prompts/PHASE-1-PLANNING.md`
+- Updated file path reference from `sessions/YYYY-MM-DD-HHMM-[topic]/01-plan.md` to `[SESSION_ID]-plan.md`
+
+### 4. **New Features Implemented**
+
+#### **Source Detection and Reuse**
+- System automatically detects existing source files in `sources/` directory
+- Users can manually add sources outside of Deep Research workflow
+- Sources are validated and indexed when starting new sessions
+- Multiple research sessions share the same source collection
+
+#### **User Directory-Based Operations**
+- Research sessions created in user's current working directory
+- No need for users to specify directory paths
+- Each directory can have its own active research session
+- Metadata stored in hidden `.deep-research` directory for clean user experience
+
+#### **Session ID-Based File Naming**
+- Session-specific files use consistent naming: `[SESSION_ID]-plan.md`, `[SESSION_ID]-findings.md`, etc.
+- Enables multiple research sessions in same directory
+- Clear file organization and identification
 
 ## Integration with Existing System
 

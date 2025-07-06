@@ -29,25 +29,36 @@ if empty(RESEARCH_QUESTION):
 TIMESTAMP = current_datetime_format("YYYY-MM-DD-HHMM")
 TOPIC_SLUG = generate_slug(RESEARCH_QUESTION)
 SESSION_ID = TIMESTAMP + "-" + TOPIC_SLUG
-SESSION_DIR = "sessions/" + SESSION_ID
+USER_DIR = $(pwd)
+RESEARCH_META_DIR = "$USER_DIR/.deep-research"
+SESSION_META_DIR = "$RESEARCH_META_DIR/sessions/$SESSION_ID"
+SOURCES_DIR = "$USER_DIR/sources"
 ```
 
 ### Step 3: Check for Existing Active Session
 ```
-if file_exists("sessions/.current-research"):
-    ACTIVE_SESSION = read_file("sessions/.current-research")
+if file_exists("$USER_DIR/.deep-research/.current-research"):
+    ACTIVE_SESSION = read_file("$USER_DIR/.deep-research/.current-research")
     if not empty(ACTIVE_SESSION):
         warn("Active session detected: " + ACTIVE_SESSION)
         prompt("Would you like to continue with the existing session or start a new one?")
         // Handle user choice
 ```
 
-### Step 4: Initialize Session Directory
+### Step 4: Initialize Session Directory and Detect Sources
 ```
-create_directory(SESSION_DIR)
-if not directory_exists(SESSION_DIR):
-    error("Failed to create session directory: " + SESSION_DIR)
+create_directory(RESEARCH_META_DIR)
+create_directory(SESSION_META_DIR)
+create_directory(SOURCES_DIR)
+if not directory_exists(SESSION_META_DIR):
+    error("Failed to create session metadata directory: " + SESSION_META_DIR)
     exit
+
+// Detect existing sources
+EXISTING_SOURCES = scan_directory(SOURCES_DIR, "*.md")
+if not empty(EXISTING_SOURCES):
+    info("Found " + count(EXISTING_SOURCES) + " existing source files")
+    validate_and_index_sources(EXISTING_SOURCES)
 ```
 
 ### Step 5: Create Initial Metadata
@@ -62,19 +73,19 @@ METADATA = {
     "phase": "planning",
     // ... (complete metadata structure as defined above)
 }
-write_json(SESSION_DIR + "/metadata.json", METADATA)
+write_json(SESSION_META_DIR + "/metadata.json", METADATA)
 ```
 
 ### Step 6: Execute Phase 1 Research Planning
 ```
 // Apply the complete Phase 1 planning methodology with ultrathink
 RESEARCH_PLAN = execute_phase_1_planning(RESEARCH_QUESTION)
-write_file(SESSION_DIR + "/01-plan.md", RESEARCH_PLAN)
+write_file("$USER_DIR/$SESSION_ID-plan.md", RESEARCH_PLAN)
 ```
 
 ### Step 7: Update Global State
 ```
-write_file("sessions/.current-research", SESSION_ID)
+write_file("$USER_DIR/.deep-research/.current-research", SESSION_ID)
 ```
 
 ### Step 8: Initialize Progress Tracking
@@ -108,26 +119,34 @@ If empty, respond with: "Please provide a research question. Usage: /research-st
 Get current timestamp in YYYY-MM-DD-HHMM format
 Create topic slug from research question (3-5 key words, lowercase, hyphenated)
 Combine as: TIMESTAMP-TOPIC_SLUG
-Set SESSION_DIR as: sessions/[SESSION_ID]
+Set SESSION_META_DIR as: .deep-research/sessions/[SESSION_ID]
+Set SOURCES_DIR as: sources/
+Set USER_DIR as: current working directory
 ```
 
 ### 3. Check for Active Session
 ```
-Use Read tool to check: sessions/.current-research
+Use Read tool to check: .deep-research/.current-research
 If file exists and not empty, warn user about existing active session
 Ask: "Continue existing session or start new one?"
 ```
 
-### 4. Create Session Directory
+### 4. Create Session Directory and Detect Sources
 ```
-Use Bash tool: mkdir -p "sessions/[SESSION_ID]"
+Use Bash tool: mkdir -p ".deep-research/sessions/[SESSION_ID]"
+Use Bash tool: mkdir -p "sources"
 Verify directory creation was successful
+
+// Detect existing sources
+Use Glob tool to find: sources/*.md
+If sources found, display count and validate format
+Update metadata with existing source information
 ```
 
 ### 5. Initialize Metadata
 ```
 Create metadata.json with the complete structure defined above
-Use Write tool to save to: [SESSION_DIR]/metadata.json
+Use Write tool to save to: .deep-research/sessions/[SESSION_ID]/metadata.json
 Include actual timestamp, session ID, and research question
 ```
 
@@ -171,14 +190,14 @@ Create comprehensive research plan following the template
 
 ### 7. Save Research Plan
 ```
-Use Write tool to save plan as: [SESSION_DIR]/01-plan.md
+Use Write tool to save plan as: [SESSION_ID]-plan.md
 Follow exact template format from prompts/PHASE-1-PLANNING.md
 Include all required sections: Overview, Sub-Questions, Research Sequence, Expected Outcomes, Synthesis Approach
 ```
 
 ### 8. Update Global State
 ```
-Use Write tool to save session ID to: sessions/.current-research
+Use Write tool to save session ID to: .deep-research/.current-research
 This marks the session as active
 ```
 
@@ -226,12 +245,18 @@ This command initiates a new research session using the four-phase deep research
 
 ### Session Directory Structure
 ```
-sessions/YYYY-MM-DD-HHMM-slug/
-├── metadata.json           # Session state and progress tracking
-├── 01-plan.md             # Research plan with sub-questions
-├── 02-sources/            # Source collection directory (created later)
-├── 03-findings.md         # Analysis results (created later)
-└── 04-report.html         # Final report (created later)
+[user-directory]/
+├── .deep-research/              # Hidden directory for session metadata
+│   ├── .current-research        # Active session tracker
+│   └── sessions/                # Session metadata storage
+│       └── [session-id]/
+│           └── metadata.json
+├── sources/                     # Shared source collection
+│   ├── source-001-*.md
+│   └── source-inventory.md
+├── [session-id]-plan.md         # Session-specific files
+├── [session-id]-findings.md
+└── [session-id]-report.html
 ```
 
 ### Topic Slug Generation
@@ -301,7 +326,7 @@ Create comprehensive plan following the template structure with:
    - Ensure no conflicts with existing sessions
 
 2. **Create Session Directory**: 
-   - Path: `sessions/[SESSION_ID]/`
+   - Path: `.deep-research/sessions/[SESSION_ID]/`
    - Verify parent directory exists
    - Create with proper permissions
 
@@ -388,10 +413,10 @@ Create comprehensive plan following the template structure with:
     }
   },
   "files": {
-    "planFile": "01-plan.md",
-    "sourcesDir": "02-sources/",
-    "findingsFile": "03-findings.md",
-    "reportFile": "04-report.html"
+    "planFile": "[SESSION_ID]-plan.md",
+    "sourcesDir": "sources/",
+    "findingsFile": "[SESSION_ID]-findings.md",
+    "reportFile": "[SESSION_ID]-report.html"
   },
   "metrics": {
     "totalTimeSpent": "0h 0m",

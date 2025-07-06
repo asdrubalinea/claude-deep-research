@@ -1,0 +1,13 @@
+{
+  "id": "file-structure-modification",
+  "started": "2025-07-06T14:07:00Z",
+  "lastUpdated": "2025-07-06T14:07:00Z",
+  "status": "active",
+  "phase": "complete",
+  "progress": {
+    "discovery": { "answered": 5, "total": 5 },
+    "detail": { "answered": 5, "total": 5 }
+  },
+  "contextFiles": ["commands/research-start.md", "commands/research-status.md", "commands/research-current.md", "commands/research-list.md", "commands/research-end.md", "sessions/", "templates/"],
+  "relatedFeatures": []
+}

@@ -16,7 +16,7 @@ Finalize and close the current research session.
 
 ### Step 1: Validate Active Session
 ```
-CURRENT_SESSION_FILE = "sessions/.current-research"
+CURRENT_SESSION_FILE = ".deep-research/.current-research"
 if not file_exists(CURRENT_SESSION_FILE):
     display_error("No active research session to end.")
     display_message("Use `/research-list` to see all available sessions")
@@ -27,8 +27,8 @@ if empty(ACTIVE_SESSION_ID):
     display_error("No active session ID found.")
     exit
 
-SESSION_DIR = "sessions/" + ACTIVE_SESSION_ID
-METADATA_FILE = SESSION_DIR + "/metadata.json"
+SESSION_META_DIR = ".deep-research/sessions/" + ACTIVE_SESSION_ID
+METADATA_FILE = SESSION_META_DIR + "/metadata.json"
 ```
 
 ### Step 2: Load Current Session State
@@ -116,7 +116,7 @@ When executing this command, follow these exact steps:
 
 ### 1. Validate Active Session
 ```
-Use Read tool to check: sessions/.current-research
+Use Read tool to check: .deep-research/.current-research
 If file doesn't exist or is empty:
   - Display: "❌ No active research session to end."
   - Display: "💡 Use `/research-list` to see all available sessions"
@@ -421,9 +421,9 @@ Gap Identification:
 ### Report Generation Process
 ```
 1. Compile Research Data
-   - Load all source files from 02-sources/
-   - Load findings from 03-findings.md
-   - Load research plan from 01-plan.md
+   - Load all source files from sources/
+   - Load findings from [SESSION_ID]-findings.md
+   - Load research plan from [SESSION_ID]-plan.md
    - Extract metadata and metrics
 
 2. Generate Report Content
@@ -492,19 +492,22 @@ Alternative Formats:
 ### Archive Organization
 ```
 Final Session Structure:
-sessions/YYYY-MM-DD-HHMM-slug/
-├── metadata.json           # Final session metadata
-├── 01-plan.md             # Research plan
-├── 02-sources/            # Source collection
+[user-directory]/
+├── .deep-research/
+│   └── sessions/
+│       └── YYYY-MM-DD-HHMM-slug/
+│           ├── metadata.json           # Final session metadata
+│           └── backup/                # Backup copies
+│               ├── metadata-backup.json
+│               └── report-backup.html
+├── sources/               # Source collection
 │   ├── source-001-*.md    # Individual sources
 │   ├── source-002-*.md
 │   └── source-inventory.md # Source index
-├── 03-findings.md         # Analysis and findings
-├── 04-report.html         # Final interactive report
-├── session-summary.md     # Completion summary
-└── backup/                # Backup copies
-    ├── metadata-backup.json
-    └── report-backup.html
+├── [SESSION_ID]-plan.md             # Research plan
+├── [SESSION_ID]-findings.md         # Analysis and findings
+├── [SESSION_ID]-report.html         # Final interactive report
+└── [SESSION_ID]-summary.md     # Completion summary
 ```
 
 ### Metadata Finalization

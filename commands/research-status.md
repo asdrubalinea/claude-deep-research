@@ -21,7 +21,7 @@ This command displays the status of your active research session, shows current 
 ## Instructions
 
 1. **Check for Active Session**
-   - Read `.current-research` file in project root
+   - Read `.deep-research/.current-research` file in user's current directory
    - If file doesn't exist or is empty:
      - Show message: "No active research session"
      - Suggest using `/research-start` to begin new research
@@ -29,8 +29,9 @@ This command displays the status of your active research session, shows current 
      - Exit
 
 2. **Load Session Data**
-   - Parse `.current-research` to get session directory path
-   - Read `metadata.json` from session directory for current phase and progress in parallel
+   - Parse `.deep-research/.current-research` to get session ID
+   - Construct session metadata path as `.deep-research/sessions/[SESSION_ID]/metadata.json`
+   - Read `metadata.json` from `.deep-research/sessions/[SESSION_ID]/` for current phase and progress in parallel
    - If metadata.json doesn't exist, create it with default values:
      ```json
      {
@@ -126,7 +127,7 @@ Status: 🎉 Research Complete
 
 ### Phase 1 - Planning
 - **If planning incomplete:**
-  - Load `01-plan.md` if exists
+  - Load `[SESSION_ID]-plan.md` if exists
   - Show research plan review prompt
   - Ask for approval to proceed to Phase 2
   - Update metadata on approval
@@ -137,7 +138,7 @@ Status: 🎉 Research Complete
 
 ### Phase 2 - Information Gathering
 - **If gathering in progress:**
-  - Load `02-sources/source-inventory.md` if exists
+  - Load `sources/source-inventory.md` if exists
   - Show current source count and gaps
   - Continue with next sub-question from research plan
   - ## ultrathink
@@ -150,7 +151,7 @@ Status: 🎉 Research Complete
 
 ### Phase 3 - Analysis
 - **If analysis in progress:**
-  - Load all sources from `02-sources/` directory in parallel
+  - Load all sources from `sources/` directory in parallel
   - Show current findings progress
   - Continue analysis from last documented finding
   - ## ultrathink
@@ -163,7 +164,7 @@ Status: 🎉 Research Complete
 
 ### Phase 4 - Report Generation
 - **If report in progress:**
-  - Load `03-findings.md` and source data
+  - Load `[SESSION_ID]-findings.md` and source data
   - Show current report status
   - Continue report generation from last section
   - Present final report compilation prompts
@@ -178,8 +179,8 @@ Status: 🎉 Research Complete
 **Trigger:** Research plan approved by user
 **Actions:**
 1. Update metadata: `phase: 2, phase_name: "Information Gathering"`
-2. Create `02-sources/` directory
-3. Initialize `source-inventory.md`
+2. Ensure `sources/` directory exists
+3. Initialize `sources/source-inventory.md`
 4. Set `current_action: "collect_sources"`
 5. Load first sub-question from research plan
 
@@ -188,7 +189,7 @@ Status: 🎉 Research Complete
 **Actions:**
 1. Update metadata: `phase: 3, phase_name: "Analysis"`
 2. Set `current_action: "analyze_sources"`
-3. Create `03-findings.md` template
+3. Create `[SESSION_ID]-findings.md` template
 4. Load all collected sources for analysis
 
 ### Analysis → Report
@@ -205,7 +206,7 @@ Status: 🎉 Research Complete
 1. Update metadata: `phase: 5, phase_name: "Complete"`
 2. Set `current_action: "session_complete"`
 3. Archive session data
-4. Clear `.current-research` file
+4. Clear `.deep-research/.current-research` file
 
 ## Error Handling
 

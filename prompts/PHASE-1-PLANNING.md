@@ -64,7 +64,7 @@ Create a well-organized plan with:
 
 ### Step 4: Save Your Plan
 Use the Write tool to save your plan to:
-`sessions/YYYY-MM-DD-HHMM-[topic]/01-plan.md`
+`[SESSION_ID]-plan.md`
 
 Replace:
 - YYYY-MM-DD with today's date

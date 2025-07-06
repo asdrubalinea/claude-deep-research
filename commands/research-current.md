@@ -16,7 +16,7 @@ Display detailed information about the active research session.
 
 ### Step 1: Check for Active Session
 ```
-CURRENT_SESSION_FILE = "sessions/.current-research"
+CURRENT_SESSION_FILE = ".deep-research/.current-research"
 if not file_exists(CURRENT_SESSION_FILE):
     display_error("No active research session found.")
     display_message("Use `/research-start [question]` to begin new research")
@@ -31,8 +31,8 @@ if empty(ACTIVE_SESSION_ID):
     display_error("No active session ID found in .current-research file")
     exit
 
-SESSION_DIR = "sessions/" + ACTIVE_SESSION_ID
-METADATA_FILE = SESSION_DIR + "/metadata.json"
+SESSION_META_DIR = ".deep-research/sessions/" + ACTIVE_SESSION_ID
+METADATA_FILE = SESSION_META_DIR + "/metadata.json"
 
 if not file_exists(METADATA_FILE):
     display_error("Session metadata not found: " + METADATA_FILE)
@@ -45,10 +45,10 @@ METADATA = parse_json(read_file(METADATA_FILE))
 ### Step 3: Validate Session Files
 ```
 // Check for essential files and collect file status in parallel
-PLAN_FILE = SESSION_DIR + "/" + METADATA.files.planFile
-SOURCES_DIR = SESSION_DIR + "/" + METADATA.files.sourcesDir
-FINDINGS_FILE = SESSION_DIR + "/" + METADATA.files.findingsFile
-REPORT_FILE = SESSION_DIR + "/" + METADATA.files.reportFile
+PLAN_FILE = ACTIVE_SESSION_ID + "-plan.md"
+SOURCES_DIR = "sources/"
+FINDINGS_FILE = ACTIVE_SESSION_ID + "-findings.md"
+REPORT_FILE = ACTIVE_SESSION_ID + "-report.html"
 
 // Execute parallel file checks
 FILE_STATUS = check_files_parallel([
@@ -88,7 +88,7 @@ When executing this command, follow these exact steps:
 
 ### 1. Check for Active Session
 ```
-Use Read tool to check: sessions/.current-research
+Use Read tool to check: .deep-research/.current-research
 If file doesn't exist or is empty:
   - Display: "❌ No active research session found."
   - Display: "💡 Use `/research-start [question]` to begin new research"
@@ -99,7 +99,7 @@ If file doesn't exist or is empty:
 ### 2. Load Session Metadata
 ```
 Parse session ID from .current-research file
-Construct session directory path: sessions/[SESSION_ID]
+Construct session metadata path: .deep-research/sessions/[SESSION_ID]
 Use Read tool to load metadata.json
 If metadata.json doesn't exist, display error and exit
 Parse JSON metadata into usable structure
@@ -108,11 +108,11 @@ Parse JSON metadata into usable structure
 ### 3. Analyze Session Files
 ```
 Check existence of all expected files:
-- 01-plan.md (or configured plan file)
-- 02-sources/ directory
-- 03-findings.md (if analysis phase reached)
-- 04-report.html (if report phase reached)
-Use LS tool to count source files in 02-sources/ directory
+- [SESSION_ID]-plan.md
+- sources/ directory
+- [SESSION_ID]-findings.md (if analysis phase reached)
+- [SESSION_ID]-report.html (if report phase reached)
+Use LS tool to count source files in sources/ directory
 ```
 
 ### 4. Calculate Session Metrics
@@ -462,7 +462,7 @@ Identify and display:
 - **Validation Opportunities**: Sources that can cross-reference each other
 
 ### Source File Analysis
-For each source file in 02-sources/:
+For each source file in sources/:
 - File name and title
 - Source type and tier classification
 - Sub-question relevance

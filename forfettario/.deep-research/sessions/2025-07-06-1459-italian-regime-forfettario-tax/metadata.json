@@ -1,0 +1,54 @@
+{
+  "id": "2025-07-06-1459-italian-regime-forfettario-tax",
+  "title": "Italian Regime Forfettario Tax Regime: Comprehensive Analysis",
+  "question": "make a detailed report on the italian \"Regime forfettario\" tax regime",
+  "started": "2025-07-06T14:59:00Z",
+  "lastUpdated": "2025-07-06T14:59:00Z",
+  "status": "completed",
+  "phase": "completed",
+  "progress": {
+    "planning": {
+      "status": "completed",
+      "subQuestions": 7,
+      "planApproved": true
+    },
+    "gathering": {
+      "status": "completed",
+      "sourcesCollected": 9,
+      "sourcesTargeted": 9
+    },
+    "analysis": {
+      "status": "completed",
+      "findingsGenerated": true
+    },
+    "report": {
+      "status": "completed",
+      "format": "html"
+    }
+  },
+  "research": {
+    "subQuestions": [],
+    "sources": {
+      "total": 0,
+      "byType": {},
+      "byTier": {}
+    },
+    "coverage": {
+      "wellCovered": [],
+      "gaps": [],
+      "biasesNoted": []
+    }
+  },
+  "files": {
+    "planFile": "2025-07-06-1459-italian-regime-forfettario-tax-plan.md",
+    "sourcesDir": "sources/",
+    "findingsFile": "2025-07-06-1459-italian-regime-forfettario-tax-findings.md",
+    "reportFile": "2025-07-06-1459-italian-regime-forfettario-tax-report.html"
+  },
+  "metrics": {
+    "totalTimeSpent": "0h 0m",
+    "sessionsCount": 1,
+    "wordsGenerated": 0,
+    "citationsCount": 0
+  }
+}

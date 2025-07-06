@@ -15,7 +15,7 @@ Display overview of all research sessions (active, completed, and paused).
 
 ### Step 1: Discover All Sessions
 ```
-SESSIONS_DIR = "sessions"
+SESSIONS_DIR = ".deep-research/sessions"
 SESSION_DIRECTORIES = list_directories(SESSIONS_DIR)
 SESSIONS = []
 
@@ -33,7 +33,7 @@ SESSIONS = read_json_files_parallel(METADATA_FILES)
 
 ### Step 2: Identify Active Session
 ```
-CURRENT_SESSION_FILE = SESSIONS_DIR + "/.current-research"
+CURRENT_SESSION_FILE = ".deep-research/.current-research"
 ACTIVE_SESSION_ID = null
 if file_exists(CURRENT_SESSION_FILE):
     ACTIVE_SESSION_ID = read_file(CURRENT_SESSION_FILE).strip()
@@ -74,7 +74,7 @@ When executing this command, follow these exact steps:
 
 ### 1. Discover All Sessions
 ```
-Use LS tool to list directories in: sessions/
+Use LS tool to list directories in: .deep-research/sessions/
 Filter out .current-research file
 For each session directory, attempt to read metadata.json
 Build list of valid sessions with their metadata
@@ -82,7 +82,7 @@ Build list of valid sessions with their metadata
 
 ### 2. Identify Active Session
 ```
-Use Read tool to check: sessions/.current-research
+Use Read tool to check: .deep-research/.current-research
 If file exists, extract active session ID
 Mark active session in the display
 ```
