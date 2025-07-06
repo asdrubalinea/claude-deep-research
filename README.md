@@ -4,6 +4,10 @@ Transform Claude Code into an advanced research agent that conducts systematic, 
 
 ## Quick Start
 
+```bash
+cp commands/* ~/.claude/commands
+```
+
 Use slash commands to manage your research:
 
 ```bash
@@ -29,7 +33,7 @@ The system will guide you through 4 phases with optional clarifying questions at
 - **Optional questions**: Time period, technical depth, source priorities
 - Creates structured research plan
 
-### 🔍 Phase 2: Information Gathering  
+### 🔍 Phase 2: Information Gathering
 - Searches and saves 15-25 high-quality sources
 - **Optional questions**: Academic vs industry sources, regional focus
 - Evaluates source credibility (Tier 1-3)
@@ -46,11 +50,11 @@ The system will guide you through 4 phases with optional clarifying questions at
 
 ## Features
 
-✅ **Smart Defaults** - Skip clarifying questions to use sensible defaults  
-✅ **Resumable Sessions** - Continue research across conversations  
-✅ **Parallel Operations** - Fast concurrent searches and analysis  
-✅ **Citation Management** - Academic-standard source attribution  
-✅ **Quality Control** - Human checkpoints between phases  
+✅ **Smart Defaults** - Skip clarifying questions to use sensible defaults
+✅ **Resumable Sessions** - Continue research across conversations
+✅ **Parallel Operations** - Fast concurrent searches and analysis
+✅ **Citation Management** - Academic-standard source attribution
+✅ **Quality Control** - Human checkpoints between phases
 
 ## Output Structure
 
@@ -67,7 +71,7 @@ sessions/
 ## Example Research Topics
 
 - Technology trends and assessments
-- Scientific literature reviews  
+- Scientific literature reviews
 - Market analysis and competitor research
 - Policy and regulatory analysis
 - Historical investigations
