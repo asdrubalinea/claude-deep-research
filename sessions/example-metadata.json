@@ -1,0 +1,125 @@
+{
+  "id": "2025-07-06-1045-ai-productivity-tools",
+  "title": "AI Productivity Tools: Impact on Knowledge Workers",
+  "question": "How are AI productivity tools transforming knowledge work, and what are the measurable impacts on productivity, job satisfaction, and skill development?",
+  "started": "2025-07-06T10:45:00Z",
+  "lastUpdated": "2025-07-06T16:30:00Z",
+  "status": "active",
+  "phase": "gathering",
+  "progress": {
+    "planning": {
+      "status": "completed",
+      "subQuestions": 8,
+      "planApproved": true
+    },
+    "gathering": {
+      "status": "in_progress",
+      "sourcesCollected": 12,
+      "sourcesTargeted": 20
+    },
+    "analysis": {
+      "status": "pending",
+      "findingsGenerated": false
+    },
+    "report": {
+      "status": "pending",
+      "format": "html"
+    }
+  },
+  "research": {
+    "subQuestions": [
+      {
+        "id": "sq1",
+        "question": "What specific AI productivity tools are most widely adopted in knowledge work?",
+        "status": "researched",
+        "sources": 4
+      },
+      {
+        "id": "sq2",
+        "question": "What measurable productivity gains have been documented from AI tool usage?",
+        "status": "researched",
+        "sources": 3
+      },
+      {
+        "id": "sq3",
+        "question": "How do AI tools impact job satisfaction and work-life balance?",
+        "status": "in_progress",
+        "sources": 2
+      },
+      {
+        "id": "sq4",
+        "question": "What new skills are knowledge workers developing to work with AI tools?",
+        "status": "researched",
+        "sources": 3
+      },
+      {
+        "id": "sq5",
+        "question": "What are the main challenges and limitations of current AI productivity tools?",
+        "status": "pending",
+        "sources": 0
+      },
+      {
+        "id": "sq6",
+        "question": "How are different industries adopting AI productivity tools?",
+        "status": "pending",
+        "sources": 0
+      },
+      {
+        "id": "sq7",
+        "question": "What are the cost-benefit analyses of implementing AI productivity tools?",
+        "status": "pending",
+        "sources": 0
+      },
+      {
+        "id": "sq8",
+        "question": "What future trends are predicted for AI productivity tools in knowledge work?",
+        "status": "pending",
+        "sources": 0
+      }
+    ],
+    "sources": {
+      "total": 12,
+      "byType": {
+        "academic": 4,
+        "industry_report": 3,
+        "news_article": 2,
+        "blog_post": 2,
+        "survey": 1
+      },
+      "byTier": {
+        "tier1": 4,
+        "tier2": 6,
+        "tier3": 2
+      }
+    },
+    "coverage": {
+      "wellCovered": [
+        "AI tool adoption rates",
+        "Productivity measurement methodologies",
+        "Skill development requirements"
+      ],
+      "gaps": [
+        "Long-term career impact studies",
+        "Cross-industry comparison data",
+        "ROI calculations for small businesses"
+      ],
+      "biasesNoted": [
+        "Technology vendor sponsored studies",
+        "Self-reported productivity gains",
+        "Sample bias toward tech-savvy workers"
+      ]
+    }
+  },
+  "files": {
+    "planFile": "01-plan.md",
+    "sourcesDir": "02-sources/",
+    "findingsFile": "03-findings.md",
+    "reportFile": "04-report.html"
+  },
+  "metrics": {
+    "totalTimeSpent": "3h 45m",
+    "sessionsCount": 2,
+    "wordsGenerated": 8500,
+    "citationsCount": 28
+  }
+}

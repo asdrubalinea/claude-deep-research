@@ -4,26 +4,41 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a Deep Research System that transforms Claude Code into an advanced research agent using a four-phase workflow with human checkpoints. The system guides structured research through:
+This is a Deep Research System that transforms Claude Code into an advanced research agent using a four-phase workflow with human checkpoints. The system now features **slash commands** for streamlined workflow management, eliminating the need for manual prompt copying.
 
+### Four-Phase Research Methodology:
 1. **Phase 1**: Research Planning - Decompose complex questions into actionable sub-questions
 2. **Phase 2**: Information Gathering - Systematically search and save sources
 3. **Phase 3**: Analysis - Analyze sources and create findings
 4. **Phase 4**: Report Generation - Create interactive HTML reports with citations
 
+### Key Improvements:
+- **Command-driven interface** - No more manual prompt copying
+- **Session management** - Resumable research across multiple conversations
+- **Progress tracking** - Comprehensive metadata and state management
+- **Quality assurance** - Automated source evaluation and citation management
+
 ## Common Commands
 
 ### Research Workflow Commands
-There are no build, test, or lint commands for this documentation-focused repository. Instead, the key commands are:
+The Deep Research System now uses slash commands for streamlined workflow management:
 
-1. **Start new research**: Paste content from `prompts/PHASE-1-PLANNING.md` with your research question
-2. **Continue to gathering**: Paste content from `prompts/PHASE-2-GATHERING.md` 
-3. **Move to analysis**: Paste content from `prompts/PHASE-3-ANALYSIS.md`
-4. **Generate report**: Paste content from `prompts/PHASE-4-REPORT.md`
+1. **`/research-start [your research question]`** - Initiates a new research session with automated planning
+2. **`/research-status`** - Checks progress and continues from where you left off
+3. **`/research-current`** - Shows detailed view of your active research session
+4. **`/research-list`** - Lists all research sessions (active, completed, paused)
+5. **`/research-end`** - Finalizes and completes your research session
+
+### Legacy Manual Process (Deprecated)
+For reference, the old manual process involved copying prompts from:
+- `prompts/PHASE-1-PLANNING.md`, `prompts/PHASE-2-GATHERING.md`, etc.
+- This is no longer recommended - use the slash commands instead
 
 ### File Management
-- Research sessions are saved in `research-sessions/YYYY-MM-DD-topic-name/`
-- Use TodoWrite to track progress through the four phases
+- Research sessions are saved in `sessions/YYYY-MM-DD-HHMM-topic-slug/`
+- Metadata tracking via `metadata.json` in each session directory
+- Global state management with `sessions/.current-research` file
+- Use TodoWrite to track progress through the four phases (automated by commands)
 - Save artifacts using Claude's artifact feature for final reports
 
 ## Architecture and File Structure
@@ -32,20 +47,30 @@ There are no build, test, or lint commands for this documentation-focused reposi
 
 ```
 deep-research/
-├── prompts/                    # Phase-specific prompt templates
-│   ├── PHASE-1-PLANNING.md    # Research decomposition prompt
-│   ├── PHASE-2-GATHERING.md   # Source collection prompt  
-│   ├── PHASE-3-ANALYSIS.md    # Analysis and synthesis prompt
-│   ├── PHASE-4-REPORT.md      # Report generation prompt
-│   └── RESEARCH-GUIDELINES.md # Ethical guidelines and standards
-├── research-sessions/          # Output directory for all research
-│   └── YYYY-MM-DD-topic/      # Individual research projects
-│       ├── 01-research-plan.md
-│       ├── 02-sources/
-│       ├── 03-findings.md
-│       └── 04-report.html
-├── templates/                  # Templates for outputs
-└── requirements/              # System requirements documentation
+├── commands/                   # Slash command implementations
+│   ├── research-start.md      # /research-start command
+│   ├── research-status.md     # /research-status command
+│   ├── research-current.md    # /research-current command
+│   ├── research-list.md       # /research-list command
+│   └── research-end.md        # /research-end command
+├── sessions/                   # Research session storage
+│   ├── .current-research      # Global state file
+│   └── YYYY-MM-DD-HHMM-slug/  # Individual research sessions
+│       ├── metadata.json      # Session state and progress
+│       ├── 01-plan.md         # Research plan
+│       ├── 02-sources/        # Source collection
+│       │   ├── source-001-*.md
+│       │   └── source-inventory.md
+│       ├── 03-findings.md     # Analysis results
+│       └── 04-report.html     # Final report
+├── templates/                  # Internal templates for generation
+│   ├── plan-template.md       # Research plan template
+│   ├── source-template.md     # Source file template
+│   ├── findings-template.md   # Analysis template
+│   └── report-template.html   # Report template
+├── prompts/                    # Legacy prompt files (reference only)
+├── requirements/              # System requirements documentation
+└── CLAUDE.md                  # This file
 ```
 
 ### Key Architectural Patterns
@@ -63,25 +88,42 @@ deep-research/
 ## Important Implementation Details
 
 ### When Starting Research
-1. Always create the research directory structure: `research-sessions/YYYY-MM-DD-topic-name/`
-2. Use TodoWrite to track the four phases
-3. Save the research plan before proceeding to Phase 2
+1. Use `/research-start [your research question]` to automatically:
+   - Create session directory structure: `sessions/YYYY-MM-DD-HHMM-topic-slug/`
+   - Generate metadata.json for state tracking
+   - Execute Phase 1 planning with sub-question decomposition
+   - Set up TodoWrite to track the four phases
+   - Save the research plan before proceeding to Phase 2
+2. Approve the research plan when prompted
+3. Use `/research-status` to continue to Phase 2 (Information Gathering)
 
 ### During Information Gathering (Phase 2)
-- Create subdirectory `02-sources/` for storing fetched content
-- Name source files as `source-NNN-descriptive-title.md` (e.g., source-001-openai-announcement.md)
-- Maintain a `source-inventory.md` file listing all sources
+- Use `/research-status` to continue systematic source collection
+- System automatically creates `02-sources/` subdirectory
+- Sources are named as `source-NNN-descriptive-title.md` (e.g., source-001-openai-announcement.md)
+- System maintains `source-inventory.md` file with quality tiers and coverage assessment
 - Respect ethical web research guidelines from `RESEARCH-GUIDELINES.md`
+- Progress tracked in metadata.json (sources collected vs. targeted)
 
 ### For Analysis (Phase 3)
-- Read all previously saved sources from the `02-sources/` directory
-- Create comprehensive findings document at `03-findings.md`
-- Include proper citations for all claims
+- Use `/research-status` to transition to analysis phase
+- System automatically reads all sources from `02-sources/` directory
+- Creates comprehensive findings document at `03-findings.md`
+- Includes proper citations for all claims
+- Analyzes each sub-question systematically
+- Identifies cross-cutting themes and patterns
 
 ### When Generating Reports (Phase 4)
-- Generate as an interactive HTML artifact when possible
-- Include all citations with proper formatting
-- Create professional, presentation-ready output
+- Use `/research-status` to transition to report generation
+- System generates interactive HTML report using professional template
+- Includes all citations with proper formatting
+- Creates presentation-ready output with:
+  - Executive summary and key findings
+  - Detailed analysis by sub-question
+  - Cross-cutting themes and insights
+  - Comprehensive citation list
+  - Research methodology and limitations
+- Use `/research-end` to finalize and complete the session
 
 ### Quality Standards
 - Follow source evaluation tiers (Tier 1: peer-reviewed journals, government data; Tier 2: professional publications; Tier 3: use with caution)
