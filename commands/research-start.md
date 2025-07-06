@@ -76,19 +76,40 @@ METADATA = {
 write_json(SESSION_META_DIR + "/metadata.json", METADATA)
 ```
 
-### Step 6: Execute Phase 1 Research Planning
+### Step 6: Write and Ask Clarifying Questions
+```
+// Write all questions to file for reference
+write_file("$USER_DIR/$SESSION_ID-clarifying-questions.md", CLARIFYING_QUESTIONS_TEMPLATE)
+
+// Ask questions one at a time
+for each question Q1-Q5:
+    display_question_with_default()
+    wait_for_user_response()
+    if user_types_skip:
+        use_all_defaults()
+        break
+    else:
+        record_answer()
+
+// Save answers
+write_file("$USER_DIR/$SESSION_ID-clarifying-answers.md", USER_ANSWERS)
+update_metadata_json_with_preferences()
+```
+
+### Step 7: Execute Phase 1 Research Planning
 ```
 // Apply the complete Phase 1 planning methodology with ultrathink
-RESEARCH_PLAN = execute_phase_1_planning(RESEARCH_QUESTION)
+// Incorporate user preferences from clarifying questions
+RESEARCH_PLAN = execute_phase_1_planning(RESEARCH_QUESTION, USER_PREFERENCES)
 write_file("$USER_DIR/$SESSION_ID-plan.md", RESEARCH_PLAN)
 ```
 
-### Step 7: Update Global State
+### Step 8: Update Global State
 ```
 write_file("$USER_DIR/.deep-research/.current-research", SESSION_ID)
 ```
 
-### Step 8: Initialize Progress Tracking
+### Step 9: Initialize Progress Tracking
 ```
 create_todo_list([
     {id: "phase1", content: "Research Planning", status: "in_progress", priority: "high"},
@@ -98,7 +119,7 @@ create_todo_list([
 ])
 ```
 
-### Step 9: Provide User Feedback and Request Approval
+### Step 10: Provide User Feedback and Request Approval
 ```
 display_session_summary(SESSION_ID, RESEARCH_PLAN)
 prompt_user_approval("Ready to proceed with information gathering?")
@@ -150,58 +171,141 @@ Use Write tool to save to: .deep-research/sessions/[SESSION_ID]/metadata.json
 Include actual timestamp, session ID, and research question
 ```
 
-### 6. Optional Clarifying Questions
+### 6. Write Clarifying Questions
 ```
+Write clarifying questions to: [SESSION_ID]-clarifying-questions.md
+Content:
+# Research Planning Clarifying Questions
+
 Before creating the research plan, I can proceed with smart defaults or you can answer these questions for more tailored results:
 
-Q1: Is there a specific time period or geographic region you'd like me to focus on?
-(Default: No - will search all time periods and regions)
+## Q1: Is there a specific time period or geographic region you'd like me to focus on?
+**Default if unknown:** No - will search all time periods and regions
 
-Q2: What level of technical depth is appropriate for your needs?
-(Default: Medium - balanced technical and accessible content)
+## Q2: What level of technical depth is appropriate for your needs?
+**Default if unknown:** Medium - balanced technical and accessible content
 
-Q3: Are there particular types of sources you want prioritized?
-(Default: Mix of academic, industry, and news sources)
+## Q3: Are there particular types of sources you want prioritized?
+**Default if unknown:** Mix of academic, industry, and news sources
 
-Q4: Do you have any specific angles or perspectives you're most interested in?
-(Default: Comprehensive coverage of multiple viewpoints)
+## Q4: Do you have any specific angles or perspectives you're most interested in?
+**Default if unknown:** Comprehensive coverage of multiple viewpoints
 
-Q5: What format would be most useful for the final report?
-(Default: Interactive HTML report with citations)
-
-Type "skip" to proceed with defaults, or answer any/all questions.
+## Q5: What format would be most useful for the final report?
+**Default if unknown:** Interactive HTML report with citations
 ```
 
-### 7. Execute Phase 1 Planning
+### 7. Ask Clarifying Questions
+```
+Display: "Before creating the research plan, I can proceed with smart defaults or you can answer these questions for more tailored results. Type 'skip' to use all defaults."
+
+Ask Q1: "Is there a specific time period or geographic region you'd like me to focus on?"
+Display default: "(Default: No - will search all time periods and regions)"
+Wait for response
+
+If user types "skip":
+  - Use all default values
+  - Proceed to planning
+Else:
+  - Record Q1 answer
+  - Ask Q2: "What level of technical depth is appropriate for your needs?"
+  - Display default: "(Default: Medium - balanced technical and accessible content)"
+  - Continue for Q3-Q5
+
+After all questions answered:
+  - Save answers to: [SESSION_ID]-clarifying-answers.md
+  - Update metadata.json with user preferences
+```
+
+### 8. Execute Phase 1 Planning
 ```
 ## ultrathink
 Planning a comprehensive research strategy requires deep analytical thinking to break down complex questions into specific, actionable sub-questions that collectively address the main research question.
 
-Transform into expert research strategist role
-Apply the complete Phase 1 planning methodology from prompts/PHASE-1-PLANNING.md
-Analyze research question and create 5-7 sub-questions with:
-- Specific, answerable questions
-- Search strategies with keywords
-- Source types to prioritize
-- Priority levels (High/Medium/Low)
-- Potential challenges
-Create comprehensive research plan following the template
+Transform into expert research strategist specializing in decomposing complex questions into actionable research plans.
+Your role is to create a comprehensive research strategy WITHOUT conducting any actual research yet.
+
+Step 1: Analyze the Research Question
+- Identify the main topic and scope
+- Consider what aspects need investigation
+- Think about potential angles and perspectives
+- Note any constraints or specific requirements mentioned
+- Incorporate user's answers from clarifying questions
+
+Step 2: Create Sub-Questions (5-7 questions)
+For each sub-question, specify:
+- The Question: Clear, specific, and answerable
+- Search Strategy: Keywords, phrases, and boolean operators to use
+- Source Types: Academic papers, news articles, technical documentation, government reports, industry analyses, etc.
+- Priority: High/Medium/Low based on relevance to main question
+- Potential Challenges: Paywalls, recency, availability, bias, etc.
+
+Step 3: Structure Your Research Plan
+Create a well-organized plan with:
+- Clear overview of the research topic
+- Numbered sub-questions with full details
+- Suggested research sequence
+- Expected outcomes for each sub-question
+- How findings will connect to answer the main question
+
+Important: DO NOT conduct any searches or research in this phase
+DO NOT use WebSearch or WebFetch tools yet
+FOCUS ONLY on planning and structuring the research
+ENSURE sub-questions are specific and answerable
 ```
 
-### 7. Save Research Plan
+### 9. Save Research Plan
 ```
 Use Write tool to save plan as: [SESSION_ID]-plan.md
-Follow exact template format from prompts/PHASE-1-PLANNING.md
-Include all required sections: Overview, Sub-Questions, Research Sequence, Expected Outcomes, Synthesis Approach
+Follow this exact template format:
+
+# Research Plan: [Main Topic]
+
+**Date**: [Today's Date]
+**Session ID**: [SESSION_ID]
+**Research Question**: [Original question from user]
+
+## Overview
+[2-3 sentences explaining the research scope and objectives]
+
+## Sub-Questions
+
+### 1. [First Sub-Question]
+- **Question**: [Detailed question]
+- **Search Strategy**: [Keywords and search approach]
+- **Source Types**: [List of source types to prioritize]
+- **Priority**: [High/Medium/Low]
+- **Potential Challenges**: [Any anticipated difficulties]
+
+### 2. [Second Sub-Question]
+[Same structure as above]
+
+[Continue for all 5-7 sub-questions]
+
+## Research Sequence
+1. Start with: [Which sub-question to tackle first and why]
+2. Then move to: [Next priority]
+[etc.]
+
+## Expected Outcomes
+- From Q1: [What insights we expect]
+- From Q2: [What insights we expect]
+[etc.]
+
+## Synthesis Approach
+[How the findings from each sub-question will be combined to answer the main research question]
+
+## Notes
+[Any additional considerations, limitations, or special instructions]
 ```
 
-### 8. Update Global State
+### 10. Update Global State
 ```
 Use Write tool to save session ID to: .deep-research/.current-research
 This marks the session as active
 ```
 
-### 9. Initialize TodoWrite
+### 11. Initialize TodoWrite
 ```
 Use TodoWrite tool to create four-phase tracking:
 - Phase 1: Research Planning (status: in_progress)
@@ -210,7 +314,7 @@ Use TodoWrite tool to create four-phase tracking:
 - Phase 4: Report Generation (status: pending)
 ```
 
-### 10. Provide Summary and Request Approval
+### 12. Provide Summary and Request Approval
 ```
 Confirm successful session creation with session ID
 Provide brief summary of research plan with sub-question count
@@ -218,7 +322,7 @@ Show file locations created
 Ask: "I've created a comprehensive research plan with [X] sub-questions. Would you like to review and approve this plan before I proceed with information gathering? You can also suggest modifications if needed."
 ```
 
-### 11. Mark Planning Complete (After Approval)
+### 13. Mark Planning Complete (After Approval)
 ```
 Update metadata.json progress.planning.status to "completed"
 Update metadata.json progress.planning.planApproved to true

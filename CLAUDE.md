@@ -18,7 +18,7 @@ This is a Deep Research System that transforms Claude Code into an advanced rese
 - **Progress tracking** - Comprehensive metadata and state management
 - **Quality assurance** - Automated source evaluation and citation management
 - **Enhanced AI capabilities** - Automatic ultrathink for complex decisions, parallel search operations
-- **User interaction** - Optional clarifying questions with smart defaults at each phase
+- **Interactive clarifying questions** - Actively asks optional questions with smart defaults at each phase (fixed in latest version)
 - **Best practices compliance** - Follows Claude Code best practices with proper metadata and tool descriptions
 
 ## Common Commands
@@ -32,10 +32,8 @@ The Deep Research System now uses slash commands for streamlined workflow manage
 4. **`/research-list`** - Lists all research sessions (active, completed, paused)
 5. **`/research-end`** - Finalizes and completes your research session
 
-### Legacy Manual Process (Deprecated)
-For reference, the old manual process involved copying prompts from:
-- `prompts/PHASE-1-PLANNING.md`, `prompts/PHASE-2-GATHERING.md`, etc.
-- This is no longer recommended - use the slash commands instead
+### Self-Contained Commands
+The slash commands are now fully self-contained with all phase methodologies embedded directly in the command files. This ensures they work properly when copied to ~/.claude/commands without requiring external prompt files.
 
 ### File Management
 - Research sessions are saved in `sessions/YYYY-MM-DD-HHMM-topic-slug/`
@@ -71,7 +69,6 @@ deep-research/
 │   ├── source-template.md     # Source file template
 │   ├── findings-template.md   # Analysis template
 │   └── report-template.html   # Report template
-├── prompts/                    # Legacy prompt files (reference only)
 ├── requirements/              # System requirements documentation
 └── CLAUDE.md                  # This file
 ```
@@ -105,6 +102,7 @@ deep-research/
 1. Use `/research-start [your research question]` to automatically:
    - Create session directory structure: `sessions/YYYY-MM-DD-HHMM-topic-slug/`
    - Generate metadata.json for state tracking
+   - **Ask Phase 1 clarifying questions** (time period, technical depth, source priorities, etc.)
    - Execute Phase 1 planning with sub-question decomposition
    - Set up TodoWrite to track the four phases
    - Save the research plan before proceeding to Phase 2
@@ -113,10 +111,10 @@ deep-research/
 
 ### During Information Gathering (Phase 2)
 - Use `/research-status` to continue systematic source collection
+- **Phase 2 clarifying questions asked**: Academic vs industry sources, regional focus, paywall preferences, publication dates
 - System automatically creates `02-sources/` subdirectory
 - **Parallel search operations**: Up to 5 concurrent WebSearch/WebFetch calls for efficiency
 - **Automatic ultrathink**: Applied for source evaluation and search strategy decisions
-- **Optional clarifying questions**: About source preferences, regions, publication dates
 - Sources are named as `source-NNN-descriptive-title.md` (e.g., source-001-openai-announcement.md)
 - System maintains `source-inventory.md` file with quality tiers and coverage assessment
 - Respect ethical web research guidelines from `RESEARCH-GUIDELINES.md`
@@ -124,9 +122,9 @@ deep-research/
 
 ### For Analysis (Phase 3)
 - Use `/research-status` to transition to analysis phase
+- **Phase 3 clarifying questions asked**: Recent vs historical focus, technical depth level, consensus vs disagreement highlighting
 - **Parallel file reading**: Reads all sources from `02-sources/` directory simultaneously
 - **Automatic ultrathink**: Applied for pattern recognition and synthesis decisions
-- **Optional clarifying questions**: About analysis focus, technical depth, consensus vs. disagreement
 - Creates comprehensive findings document at `03-findings.md`
 - Includes proper citations for all claims
 - Analyzes each sub-question systematically
@@ -134,7 +132,7 @@ deep-research/
 
 ### When Generating Reports (Phase 4)
 - Use `/research-status` to transition to report generation
-- **Optional clarifying questions**: About audience, technical level, interactive elements
+- **Phase 4 clarifying questions asked**: Primary audience, practical vs theoretical emphasis, interactive element preferences
 - System generates interactive HTML report using professional template from `templates/report-template.html`
 - **Streamlined template**: HTML template extracted to separate file for maintainability
 - Includes all citations with proper formatting
