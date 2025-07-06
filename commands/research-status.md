@@ -1,3 +1,15 @@
+---
+description: Check current research session progress and continue workflow from where you left off
+allowed-tools:
+  - Read
+  - Write
+  - Bash
+  - TodoWrite
+  - WebSearch
+  - WebFetch
+  - Task
+---
+
 # Check Research Status
 
 Show current research session progress and continue workflow.
@@ -18,7 +30,7 @@ This command displays the status of your active research session, shows current 
 
 2. **Load Session Data**
    - Parse `.current-research` to get session directory path
-   - Read `metadata.json` from session directory for current phase and progress
+   - Read `metadata.json` from session directory for current phase and progress in parallel
    - If metadata.json doesn't exist, create it with default values:
      ```json
      {
@@ -114,7 +126,7 @@ Status: 🎉 Research Complete
 
 ### Phase 1 - Planning
 - **If planning incomplete:**
-  - Load `01-research-plan.md` if exists
+  - Load `01-plan.md` if exists
   - Show research plan review prompt
   - Ask for approval to proceed to Phase 2
   - Update metadata on approval
@@ -128,7 +140,9 @@ Status: 🎉 Research Complete
   - Load `02-sources/source-inventory.md` if exists
   - Show current source count and gaps
   - Continue with next sub-question from research plan
-  - Present WebFetch prompts for next sources
+  - ## ultrathink
+    Source evaluation and search prioritization requires careful analysis to ensure comprehensive coverage while maintaining quality standards.
+  - Present parallel WebSearch and WebFetch prompts for next sources (up to 5 concurrent)
 
 - **If gathering complete:**
   - Show source collection summary
@@ -136,9 +150,11 @@ Status: 🎉 Research Complete
 
 ### Phase 3 - Analysis
 - **If analysis in progress:**
-  - Load all sources from `02-sources/` directory
+  - Load all sources from `02-sources/` directory in parallel
   - Show current findings progress
   - Continue analysis from last documented finding
+  - ## ultrathink
+    Synthesizing findings from multiple sources requires deep analytical thinking to identify patterns, contradictions, and comprehensive insights.
   - Present analysis prompts for remaining sources
 
 - **If analysis complete:**

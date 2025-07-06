@@ -1,3 +1,13 @@
+---
+description: Finalize and close the current research session with validation and archiving
+allowed-tools:
+  - Read
+  - Write
+  - Bash
+  - TodoWrite
+  - LS
+---
+
 # End Research Session
 
 Finalize and close the current research session.
@@ -6,7 +16,7 @@ Finalize and close the current research session.
 
 ### Step 1: Validate Active Session
 ```
-CURRENT_SESSION_FILE = "/home/irene/deep-research/sessions/.current-research"
+CURRENT_SESSION_FILE = "sessions/.current-research"
 if not file_exists(CURRENT_SESSION_FILE):
     display_error("No active research session to end.")
     display_message("Use `/research-list` to see all available sessions")
@@ -17,7 +27,7 @@ if empty(ACTIVE_SESSION_ID):
     display_error("No active session ID found.")
     exit
 
-SESSION_DIR = "/home/irene/deep-research/sessions/" + ACTIVE_SESSION_ID
+SESSION_DIR = "sessions/" + ACTIVE_SESSION_ID
 METADATA_FILE = SESSION_DIR + "/metadata.json"
 ```
 
@@ -34,7 +44,19 @@ CURRENT_STATUS = METADATA.status
 
 ### Step 3: Analyze Session Completion
 ```
-COMPLETION_ANALYSIS = analyze_session_completion(METADATA, SESSION_DIR)
+// Perform comprehensive session validation in parallel
+VALIDATION_TASKS = [
+    validate_plan_file(SESSION_DIR),
+    validate_sources_directory(SESSION_DIR),
+    validate_findings_file(SESSION_DIR),
+    validate_report_file(SESSION_DIR),
+    validate_citations(SESSION_DIR)
+]
+
+## ultrathink
+Session completion analysis requires thorough evaluation of research quality, completeness, and adherence to standards to ensure the research meets publication criteria.
+
+COMPLETION_ANALYSIS = run_parallel_validation(VALIDATION_TASKS)
 SESSION_COMPLETE = COMPLETION_ANALYSIS.isComplete
 MISSING_ELEMENTS = COMPLETION_ANALYSIS.missingElements
 QUALITY_ISSUES = COMPLETION_ANALYSIS.qualityIssues
@@ -94,7 +116,7 @@ When executing this command, follow these exact steps:
 
 ### 1. Validate Active Session
 ```
-Use Read tool to check: /home/irene/deep-research/sessions/.current-research
+Use Read tool to check: sessions/.current-research
 If file doesn't exist or is empty:
   - Display: "❌ No active research session to end."
   - Display: "💡 Use `/research-list` to see all available sessions"

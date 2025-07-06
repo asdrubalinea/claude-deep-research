@@ -17,6 +17,9 @@ This is a Deep Research System that transforms Claude Code into an advanced rese
 - **Session management** - Resumable research across multiple conversations
 - **Progress tracking** - Comprehensive metadata and state management
 - **Quality assurance** - Automated source evaluation and citation management
+- **Enhanced AI capabilities** - Automatic ultrathink for complex decisions, parallel search operations
+- **User interaction** - Optional clarifying questions with smart defaults at each phase
+- **Best practices compliance** - Follows Claude Code best practices with proper metadata and tool descriptions
 
 ## Common Commands
 
@@ -85,6 +88,17 @@ deep-research/
 
 5. **Multi-Modal Synthesis**: System can analyze text, images, charts, and data from various sources to create comprehensive reports.
 
+6. **Enhanced Performance**: 
+   - Automatic ultrathink activation for complex decision points (research planning, source evaluation, analysis synthesis)
+   - Parallel search operations (up to 5 concurrent WebSearch/WebFetch calls)
+   - Parallel file reading for analysis phase
+   - Optimized command execution with proper metadata
+
+7. **User Experience**: 
+   - Optional clarifying questions at each phase start with smart defaults
+   - Improved error handling and user guidance
+   - Command metadata with descriptions and allowed-tools lists
+
 ## Important Implementation Details
 
 ### When Starting Research
@@ -100,6 +114,9 @@ deep-research/
 ### During Information Gathering (Phase 2)
 - Use `/research-status` to continue systematic source collection
 - System automatically creates `02-sources/` subdirectory
+- **Parallel search operations**: Up to 5 concurrent WebSearch/WebFetch calls for efficiency
+- **Automatic ultrathink**: Applied for source evaluation and search strategy decisions
+- **Optional clarifying questions**: About source preferences, regions, publication dates
 - Sources are named as `source-NNN-descriptive-title.md` (e.g., source-001-openai-announcement.md)
 - System maintains `source-inventory.md` file with quality tiers and coverage assessment
 - Respect ethical web research guidelines from `RESEARCH-GUIDELINES.md`
@@ -107,7 +124,9 @@ deep-research/
 
 ### For Analysis (Phase 3)
 - Use `/research-status` to transition to analysis phase
-- System automatically reads all sources from `02-sources/` directory
+- **Parallel file reading**: Reads all sources from `02-sources/` directory simultaneously
+- **Automatic ultrathink**: Applied for pattern recognition and synthesis decisions
+- **Optional clarifying questions**: About analysis focus, technical depth, consensus vs. disagreement
 - Creates comprehensive findings document at `03-findings.md`
 - Includes proper citations for all claims
 - Analyzes each sub-question systematically
@@ -115,7 +134,9 @@ deep-research/
 
 ### When Generating Reports (Phase 4)
 - Use `/research-status` to transition to report generation
-- System generates interactive HTML report using professional template
+- **Optional clarifying questions**: About audience, technical level, interactive elements
+- System generates interactive HTML report using professional template from `templates/report-template.html`
+- **Streamlined template**: HTML template extracted to separate file for maintainability
 - Includes all citations with proper formatting
 - Creates presentation-ready output with:
   - Executive summary and key findings

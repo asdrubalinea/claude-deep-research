@@ -1,3 +1,13 @@
+---
+description: Display detailed information about the active research session and suggest next actions
+allowed-tools:
+  - Read
+  - Write
+  - Bash
+  - TodoWrite
+  - LS
+---
+
 # View Current Research Session
 
 Display detailed information about the active research session.
@@ -6,7 +16,7 @@ Display detailed information about the active research session.
 
 ### Step 1: Check for Active Session
 ```
-CURRENT_SESSION_FILE = "/home/irene/deep-research/sessions/.current-research"
+CURRENT_SESSION_FILE = "sessions/.current-research"
 if not file_exists(CURRENT_SESSION_FILE):
     display_error("No active research session found.")
     display_message("Use `/research-start [question]` to begin new research")
@@ -21,7 +31,7 @@ if empty(ACTIVE_SESSION_ID):
     display_error("No active session ID found in .current-research file")
     exit
 
-SESSION_DIR = "/home/irene/deep-research/sessions/" + ACTIVE_SESSION_ID
+SESSION_DIR = "sessions/" + ACTIVE_SESSION_ID
 METADATA_FILE = SESSION_DIR + "/metadata.json"
 
 if not file_exists(METADATA_FILE):
@@ -34,18 +44,19 @@ METADATA = parse_json(read_file(METADATA_FILE))
 
 ### Step 3: Validate Session Files
 ```
-// Check for essential files and collect file status
+// Check for essential files and collect file status in parallel
 PLAN_FILE = SESSION_DIR + "/" + METADATA.files.planFile
 SOURCES_DIR = SESSION_DIR + "/" + METADATA.files.sourcesDir
 FINDINGS_FILE = SESSION_DIR + "/" + METADATA.files.findingsFile
 REPORT_FILE = SESSION_DIR + "/" + METADATA.files.reportFile
 
-FILE_STATUS = {
-    "plan": file_exists(PLAN_FILE),
-    "sources_dir": directory_exists(SOURCES_DIR),
-    "findings": file_exists(FINDINGS_FILE),
-    "report": file_exists(REPORT_FILE)
-}
+// Execute parallel file checks
+FILE_STATUS = check_files_parallel([
+    {"plan": PLAN_FILE},
+    {"sources_dir": SOURCES_DIR},
+    {"findings": FINDINGS_FILE},
+    {"report": REPORT_FILE}
+])
 ```
 
 ### Step 4: Collect Additional Session Data
@@ -77,7 +88,7 @@ When executing this command, follow these exact steps:
 
 ### 1. Check for Active Session
 ```
-Use Read tool to check: /home/irene/deep-research/sessions/.current-research
+Use Read tool to check: sessions/.current-research
 If file doesn't exist or is empty:
   - Display: "❌ No active research session found."
   - Display: "💡 Use `/research-start [question]` to begin new research"
@@ -88,7 +99,7 @@ If file doesn't exist or is empty:
 ### 2. Load Session Metadata
 ```
 Parse session ID from .current-research file
-Construct session directory path: /home/irene/deep-research/sessions/[SESSION_ID]
+Construct session directory path: sessions/[SESSION_ID]
 Use Read tool to load metadata.json
 If metadata.json doesn't exist, display error and exit
 Parse JSON metadata into usable structure
@@ -498,6 +509,13 @@ Based on current session state:
 - **Switch Sessions**: Use `/research-list` to see other sessions
 - **End Session**: Use `/research-end` to finalize research
 - **Export Data**: Options for sharing or archiving research
+
+## What would you like to do next?
+1. Continue with current research session (`/research-status`)
+2. View all research sessions (`/research-list`)
+3. Start a new research session (`/research-start [question]`)
+4. Finalize current research (`/research-end`)
+5. Just show me the current status without action
 
 ## Error Handling
 

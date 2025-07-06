@@ -1,3 +1,15 @@
+---
+description: Start a new deep research session with AI-powered planning and systematic information gathering
+allowed-tools:
+  - Read
+  - Write
+  - Bash
+  - TodoWrite
+  - WebSearch
+  - WebFetch
+  - Task
+---
+
 # Start Research Session
 
 Begin deep research for: $ARGUMENTS
@@ -17,13 +29,13 @@ if empty(RESEARCH_QUESTION):
 TIMESTAMP = current_datetime_format("YYYY-MM-DD-HHMM")
 TOPIC_SLUG = generate_slug(RESEARCH_QUESTION)
 SESSION_ID = TIMESTAMP + "-" + TOPIC_SLUG
-SESSION_DIR = "/home/irene/deep-research/sessions/" + SESSION_ID
+SESSION_DIR = "sessions/" + SESSION_ID
 ```
 
 ### Step 3: Check for Existing Active Session
 ```
-if file_exists("/home/irene/deep-research/sessions/.current-research"):
-    ACTIVE_SESSION = read_file("/home/irene/deep-research/sessions/.current-research")
+if file_exists("sessions/.current-research"):
+    ACTIVE_SESSION = read_file("sessions/.current-research")
     if not empty(ACTIVE_SESSION):
         warn("Active session detected: " + ACTIVE_SESSION)
         prompt("Would you like to continue with the existing session or start a new one?")
@@ -55,14 +67,14 @@ write_json(SESSION_DIR + "/metadata.json", METADATA)
 
 ### Step 6: Execute Phase 1 Research Planning
 ```
-// Apply the complete Phase 1 planning methodology
+// Apply the complete Phase 1 planning methodology with ultrathink
 RESEARCH_PLAN = execute_phase_1_planning(RESEARCH_QUESTION)
 write_file(SESSION_DIR + "/01-plan.md", RESEARCH_PLAN)
 ```
 
 ### Step 7: Update Global State
 ```
-write_file("/home/irene/deep-research/sessions/.current-research", SESSION_ID)
+write_file("sessions/.current-research", SESSION_ID)
 ```
 
 ### Step 8: Initialize Progress Tracking
@@ -96,19 +108,19 @@ If empty, respond with: "Please provide a research question. Usage: /research-st
 Get current timestamp in YYYY-MM-DD-HHMM format
 Create topic slug from research question (3-5 key words, lowercase, hyphenated)
 Combine as: TIMESTAMP-TOPIC_SLUG
-Set SESSION_DIR as: /home/irene/deep-research/sessions/[SESSION_ID]
+Set SESSION_DIR as: sessions/[SESSION_ID]
 ```
 
 ### 3. Check for Active Session
 ```
-Use Read tool to check: /home/irene/deep-research/sessions/.current-research
+Use Read tool to check: sessions/.current-research
 If file exists and not empty, warn user about existing active session
 Ask: "Continue existing session or start new one?"
 ```
 
 ### 4. Create Session Directory
 ```
-Use Bash tool: mkdir -p "/home/irene/deep-research/sessions/[SESSION_ID]"
+Use Bash tool: mkdir -p "sessions/[SESSION_ID]"
 Verify directory creation was successful
 ```
 
@@ -119,8 +131,33 @@ Use Write tool to save to: [SESSION_DIR]/metadata.json
 Include actual timestamp, session ID, and research question
 ```
 
-### 6. Execute Phase 1 Planning
+### 6. Optional Clarifying Questions
 ```
+Before creating the research plan, I can proceed with smart defaults or you can answer these questions for more tailored results:
+
+Q1: Is there a specific time period or geographic region you'd like me to focus on?
+(Default: No - will search all time periods and regions)
+
+Q2: What level of technical depth is appropriate for your needs?
+(Default: Medium - balanced technical and accessible content)
+
+Q3: Are there particular types of sources you want prioritized?
+(Default: Mix of academic, industry, and news sources)
+
+Q4: Do you have any specific angles or perspectives you're most interested in?
+(Default: Comprehensive coverage of multiple viewpoints)
+
+Q5: What format would be most useful for the final report?
+(Default: Interactive HTML report with citations)
+
+Type "skip" to proceed with defaults, or answer any/all questions.
+```
+
+### 7. Execute Phase 1 Planning
+```
+## ultrathink
+Planning a comprehensive research strategy requires deep analytical thinking to break down complex questions into specific, actionable sub-questions that collectively address the main research question.
+
 Transform into expert research strategist role
 Apply the complete Phase 1 planning methodology from prompts/PHASE-1-PLANNING.md
 Analyze research question and create 5-7 sub-questions with:
@@ -141,7 +178,7 @@ Include all required sections: Overview, Sub-Questions, Research Sequence, Expec
 
 ### 8. Update Global State
 ```
-Use Write tool to save session ID to: /home/irene/deep-research/sessions/.current-research
+Use Write tool to save session ID to: sessions/.current-research
 This marks the session as active
 ```
 
@@ -264,7 +301,7 @@ Create comprehensive plan following the template structure with:
    - Ensure no conflicts with existing sessions
 
 2. **Create Session Directory**: 
-   - Path: `/home/irene/deep-research/sessions/[SESSION_ID]/`
+   - Path: `sessions/[SESSION_ID]/`
    - Verify parent directory exists
    - Create with proper permissions
 

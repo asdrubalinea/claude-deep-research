@@ -1,0 +1,29 @@
+{
+  "id": "fix-notes",
+  "started": "2025-07-06T13:03:00Z",
+  "lastUpdated": "2025-07-06T13:10:00Z",
+  "status": "complete",
+  "phase": "complete",
+  "progress": {
+    "discovery": {
+      "answered": 5,
+      "total": 5
+    },
+    "detail": {
+      "answered": 5,
+      "total": 5
+    }
+  },
+  "contextFiles": [
+    "prompts/PHASE-1-PLANNING.md",
+    "prompts/PHASE-2-GATHERING.md",
+    "prompts/PHASE-3-ANALYSIS.md",
+    "prompts/PHASE-4-REPORT.md",
+    "commands/research-start.md",
+    "commands/research-status.md",
+    "commands/research-current.md",
+    "commands/research-list.md",
+    "commands/research-end.md"
+  ],
+  "relatedFeatures": ["ultrathink", "parallel-searches", "clarifying-questions", "command-metadata"]
+}

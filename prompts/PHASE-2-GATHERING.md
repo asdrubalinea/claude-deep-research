@@ -13,40 +13,69 @@ Execute the research plan by:
 
 ## Instructions
 
+### Step 0: Optional Clarifying Questions
+Before starting information gathering, I can proceed with smart defaults or you can answer these questions for more targeted results:
+
+Q1: Should I prioritize academic sources over industry reports?
+(Default: No - balanced mix of academic and industry sources)
+
+Q2: Do you want me to focus on sources from specific regions or languages?
+(Default: No - global English-language sources)
+
+Q3: Should I avoid sources behind paywalls entirely?
+(Default: Yes - prioritize open access sources)
+
+Q4: What's the minimum publication date you'd consider relevant?
+(Default: Last 3 years, unless historical context needed)
+
+Type "skip" to proceed with defaults, or answer any/all questions.
+
 ### Step 1: Load the Research Plan
 First, use the Read tool to load the research plan from:
-`/home/irene/deep-research/research-sessions/YYYY-MM-DD-[topic]/01-research-plan.md`
+`sessions/YYYY-MM-DD-HHMM-[topic]/01-plan.md`
 
 Update the todo list to mark "Information Gathering" as in_progress.
 
 ### Step 2: Create Source Directory
 Use Bash to create the sources directory:
-`mkdir -p /home/irene/deep-research/research-sessions/YYYY-MM-DD-[topic]/02-sources`
+`mkdir -p sessions/YYYY-MM-DD-HHMM-[topic]/02-sources`
 
 ### Step 3: Systematic Information Gathering
 
-For EACH sub-question in your research plan:
+## ultrathink
+Information gathering strategy requires careful evaluation of source quality, relevance, and coverage to ensure comprehensive research while maintaining efficiency and avoiding redundancy.
 
-#### A. Search Phase
-1. Use WebSearch with the search strategy specified in the plan
-2. Search for 3-5 relevant sources per sub-question
-3. Prioritize:
+For ALL sub-questions in your research plan:
+
+#### A. Parallel Search Phase
+Execute searches for multiple sub-questions simultaneously for efficiency:
+
+[Use multiple tool calls in a single response - up to 5 parallel searches]
+1. WebSearch: "[search strategy for sub-question 1]"
+2. WebSearch: "[search strategy for sub-question 2]"
+3. WebSearch: "[search strategy for sub-question 3]"
+4. WebSearch: "[search strategy for sub-question 4]"
+5. WebSearch: "[search strategy for sub-question 5]"
+
+For each search, prioritize:
    - Recent content (within last 2-3 years unless historical context needed)
    - Authoritative sources (edu, gov, established publications)
    - Diverse perspectives (academic, industry, news, expert opinions)
    - Open access content (avoid paywalls when possible)
 
-#### B. Content Extraction
-For each promising search result:
-1. Use WebFetch to extract the full content
-2. Include in your WebFetch prompt:
-   - "Extract all relevant information about [specific sub-question]"
-   - "Include any statistics, quotes, or specific examples"
-   - "Note the publication date and author credentials"
+#### B. Parallel Content Extraction
+After identifying promising sources, fetch content in parallel:
+
+[Use multiple WebFetch calls simultaneously - up to 5 at once]
+1. WebFetch: "[URL 1]" with prompt: "Extract all relevant information about [specific sub-question]"
+2. WebFetch: "[URL 2]" with prompt: "Include statistics, quotes, examples, publication date and author"
+3. WebFetch: "[URL 3]" with prompt: "Focus on [specific aspect] for [sub-question]"
+4. WebFetch: "[URL 4]" with prompt: "Extract methodology and key findings"
+5. WebFetch: "[URL 5]" with prompt: "Note limitations and bias indicators"
 
 #### C. Save Sources
 Save each fetched source with a descriptive filename:
-`/home/irene/deep-research/research-sessions/YYYY-MM-DD-[topic]/02-sources/[source-number]-[domain]-[brief-title].md`
+`sessions/YYYY-MM-DD-HHMM-[topic]/02-sources/[source-number]-[domain]-[brief-title].md`
 
 Example: `01-mit-edu-ai-coding-productivity-study.md`
 
@@ -72,7 +101,7 @@ Each saved source should include:
 ### Step 4: Create Source Inventory
 
 After gathering all sources, create an inventory file:
-`/home/irene/deep-research/research-sessions/YYYY-MM-DD-[topic]/02-source-inventory.md`
+`sessions/YYYY-MM-DD-HHMM-[topic]/02-sources/source-inventory.md`
 
 Include:
 ```markdown

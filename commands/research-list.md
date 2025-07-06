@@ -1,3 +1,12 @@
+---
+description: Display overview of all research sessions and allow selection for continuation
+allowed-tools:
+  - Read
+  - Write
+  - Bash
+  - LS
+---
+
 # List All Research Sessions
 
 Display overview of all research sessions (active, completed, and paused).
@@ -6,16 +15,20 @@ Display overview of all research sessions (active, completed, and paused).
 
 ### Step 1: Discover All Sessions
 ```
-SESSIONS_DIR = "/home/irene/deep-research/sessions"
+SESSIONS_DIR = "sessions"
 SESSION_DIRECTORIES = list_directories(SESSIONS_DIR)
 SESSIONS = []
 
+// Process all session metadata files in parallel
+METADATA_FILES = []
 for each SESSION_DIR in SESSION_DIRECTORIES:
     if SESSION_DIR != ".current-research":
         METADATA_FILE = SESSIONS_DIR + "/" + SESSION_DIR + "/metadata.json"
         if file_exists(METADATA_FILE):
-            METADATA = parse_json(read_file(METADATA_FILE))
-            SESSIONS.append(METADATA)
+            METADATA_FILES.append(METADATA_FILE)
+
+// Read all metadata files in parallel
+SESSIONS = read_json_files_parallel(METADATA_FILES)
 ```
 
 ### Step 2: Identify Active Session
@@ -61,7 +74,7 @@ When executing this command, follow these exact steps:
 
 ### 1. Discover All Sessions
 ```
-Use LS tool to list directories in: /home/irene/deep-research/sessions/
+Use LS tool to list directories in: sessions/
 Filter out .current-research file
 For each session directory, attempt to read metadata.json
 Build list of valid sessions with their metadata
@@ -69,7 +82,7 @@ Build list of valid sessions with their metadata
 
 ### 2. Identify Active Session
 ```
-Use Read tool to check: /home/irene/deep-research/sessions/.current-research
+Use Read tool to check: sessions/.current-research
 If file exists, extract active session ID
 Mark active session in the display
 ```
@@ -398,6 +411,13 @@ Workspace organization:
 • Archive completed sessions periodically
 • Clean up abandoned sessions that won't be resumed
 ```
+
+## Which session would you like to work with?
+1. Continue with current active session (`/research-status`)
+2. Switch to a different session (provide session ID)
+3. Start a new research session (`/research-start [question]`)
+4. View detailed info for a specific session (`/research-current`)
+5. Just show me the list without action
 
 ## Error Handling
 

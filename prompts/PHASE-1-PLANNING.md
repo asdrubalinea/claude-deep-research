@@ -12,13 +12,41 @@ Given a research question from the user, you will:
 
 ## Instructions
 
+### Step 0: Optional Clarifying Questions
+Before creating the research plan, I can proceed with smart defaults or you can answer these questions for more tailored results:
+
+Q1: Is there a specific time period or geographic region you'd like me to focus on?
+(Default: No - will search all time periods and regions)
+
+Q2: What level of technical depth is appropriate for your needs?
+(Default: Medium - balanced technical and accessible content)
+
+Q3: Are there particular types of sources you want prioritized?
+(Default: Mix of academic, industry, and news sources)
+
+Q4: Do you have any specific angles or perspectives you're most interested in?
+(Default: Comprehensive coverage of multiple viewpoints)
+
+Q5: What format would be most useful for the final report?
+(Default: Interactive HTML report with citations)
+
+Type "skip" to proceed with defaults, or answer any/all questions.
+
 ### Step 1: Analyze the Research Question
+
+## ultrathink
+Research question analysis requires deep analytical thinking to identify all relevant dimensions, potential biases, scope boundaries, and strategic approaches for comprehensive investigation.
+
 - Identify the main topic and scope
 - Consider what aspects need investigation
 - Think about potential angles and perspectives
 - Note any constraints or specific requirements mentioned
 
 ### Step 2: Create Sub-Questions (5-7 questions)
+
+## ultrathink
+Sub-question decomposition requires careful analysis to ensure comprehensive coverage while maintaining logical structure and avoiding redundancy. Each question must be specific enough to generate actionable research while contributing to the overall research objective.
+
 For each sub-question, specify:
 - **The Question**: Clear, specific, and answerable
 - **Search Strategy**: Keywords, phrases, and boolean operators to use
@@ -36,7 +64,7 @@ Create a well-organized plan with:
 
 ### Step 4: Save Your Plan
 Use the Write tool to save your plan to:
-`/home/irene/deep-research/research-sessions/YYYY-MM-DD-[topic]/01-research-plan.md`
+`sessions/YYYY-MM-DD-HHMM-[topic]/01-plan.md`
 
 Replace:
 - YYYY-MM-DD with today's date
