@@ -1,5 +1,5 @@
 ---
-description: Start a new deep research session with AI-powered planning and systematic information gathering
+description: Start a new deep research session with enhanced AI patterns - smart defaults, error recovery, and adaptive workflows
 allowed-tools:
   - Read
   - Write
@@ -8,41 +8,108 @@ allowed-tools:
   - WebSearch
   - WebFetch
   - Task
+  - mcp__memory__create_memory
+  - mcp__memory__search_memory
+  - mcp__memory__update_memory
+  - mcp__sequentialthinking__start_thinking
+  - mcp__sequentialthinking__continue_thinking
+  - mcp__sequentialthinking__finish_thinking
 ---
 
-# Start Research Session
+# Enhanced Research Session
 
-Begin deep research for: $ARGUMENTS
+Begin enhanced deep research for: $ARGUMENTS
+
+## 🚀 Modern Agentic AI Features
+- **Smart Defaults**: Auto-detect research domain and apply optimal settings
+- **Error Recovery**: Automatic state reconciliation and graceful fallbacks
+- **Progressive UX**: Quick Start → Custom → Advanced options
+- **Parallel Processing**: Concurrent search and extraction for faster results
+- **Persistent Memory**: Learn from past sessions and user preferences across conversations
+- **Sequential Thinking**: Deep reasoning for complex research planning and strategy
+- **Health Monitoring**: Real-time progress tracking and optimization
+
 
 ## EXECUTION INSTRUCTIONS
 
-### Step 1: Parse and Validate Input
+### Step 1: Smart Input Validation
 ```
 RESEARCH_QUESTION = "$ARGUMENTS"
+
 if empty(RESEARCH_QUESTION):
     error("Please provide a research question. Usage: /research-start [your research question]")
+    suggest("Examples: 'AI impact on productivity', 'Climate solutions 2024'")
     exit
+
+// Smart validation with helpful feedback
+if length(RESEARCH_QUESTION) < 5:
+    warn("Brief question detected. This may limit research quality.")
+    CHOICE = prompt_with_default("Continue anyway?", ["yes", "clarify"], "clarify")
+    if CHOICE == "clarify":
+        RESEARCH_QUESTION = request_clarification(RESEARCH_QUESTION)
 ```
 
-### Step 2: Generate Session Identifier
+### Step 2: Smart Session Setup with Memory and Domain Detection
 ```
+// Enhanced session generation with persistent memory and AI domain detection
 TIMESTAMP = current_datetime_format("YYYY-MM-DD-HHMM")
 TOPIC_SLUG = generate_slug(RESEARCH_QUESTION)
 SESSION_ID = TIMESTAMP + "-" + TOPIC_SLUG
+
+// Load user preferences and past research patterns from persistent memory
+USER_PATTERNS = search_memory_for_user_preferences()
+RESEARCH_HISTORY = search_memory_for_similar_research(RESEARCH_QUESTION)
+
+// AI-powered domain detection enhanced with historical context
+RESEARCH_DOMAIN = detect_research_domain(RESEARCH_QUESTION, RESEARCH_HISTORY)
+SMART_DEFAULTS = load_personalized_defaults(RESEARCH_DOMAIN, USER_PATTERNS)
+CONFIDENCE_SCORE = calculate_domain_confidence(RESEARCH_DOMAIN, RESEARCH_QUESTION)
+
+// Store session initiation in memory for learning
+create_memory_entry("session_start", {
+    question: RESEARCH_QUESTION,
+    domain: RESEARCH_DOMAIN,
+    session_id: SESSION_ID,
+    user_patterns: USER_PATTERNS
+})
+
+display_domain_detection(RESEARCH_DOMAIN, CONFIDENCE_SCORE, USER_PATTERNS)
+
 USER_DIR = $(pwd)
 RESEARCH_META_DIR = "$USER_DIR/.deep-research"
 SESSION_META_DIR = "$RESEARCH_META_DIR/sessions/$SESSION_ID"
 SOURCES_DIR = "$USER_DIR/sources"
 ```
 
-### Step 3: Check for Existing Active Session
+### Step 3: Check for Existing Active Session with Auto-Recovery
 ```
-if file_exists("$USER_DIR/.deep-research/.current-research"):
-    ACTIVE_SESSION = read_file("$USER_DIR/.deep-research/.current-research")
+// Enhanced error recovery with state reconciliation
+ACTIVE_SESSION_FILE = "$USER_DIR/.deep-research/.current-research"
+if file_exists(ACTIVE_SESSION_FILE):
+    ACTIVE_SESSION = read_file(ACTIVE_SESSION_FILE).strip()
     if not empty(ACTIVE_SESSION):
-        warn("Active session detected: " + ACTIVE_SESSION)
-        prompt("Would you like to continue with the existing session or start a new one?")
-        // Handle user choice
+        // Validate session integrity
+        SESSION_DIR = "$USER_DIR/.deep-research/sessions/$ACTIVE_SESSION"
+        METADATA_FILE = "$SESSION_DIR/metadata.json"
+        
+        if not file_exists(METADATA_FILE):
+            warn("Detected orphaned session reference. Auto-cleaning...")
+            delete_file(ACTIVE_SESSION_FILE)
+            info("Cleaned invalid session reference. Proceeding with new session.")
+        else:
+            // Validate metadata integrity
+            try:
+                METADATA = parse_json(read_file(METADATA_FILE))
+                display_session_summary(METADATA)
+                CHOICE = prompt_with_smart_default(
+                    "Active session found. Continue existing or start new?", 
+                    ["continue", "new", "pause-existing"], 
+                    default="continue"
+                )
+                handle_session_choice(CHOICE, ACTIVE_SESSION)
+            catch:
+                warn("Session metadata corrupted. Attempting recovery...")
+                recover_session_metadata(ACTIVE_SESSION, RESEARCH_QUESTION)
 ```
 
 ### Step 4: Initialize Session Directory and Detect Sources
@@ -127,12 +194,22 @@ prompt_user_approval("Ready to proceed with information gathering?")
 
 ## CLAUDE CODE IMPLEMENTATION
 
-When executing this command, follow these exact steps:
+When executing this command, follow these enhanced steps with modern error recovery:
 
-### 1. Parse Research Question
+### 1. Smart Question Processing
 ```
 Extract the research question from $ARGUMENTS
-If empty, respond with: "Please provide a research question. Usage: /research-start [your research question]"
+If empty:
+  - Display: "Please provide a research question. Usage: /research-start [your research question]"
+  - Suggest examples based on trending research areas
+  - Exit gracefully
+
+Auto-detect research domain from question keywords
+Display: "🔍 Detected domain: [DOMAIN] - applying optimized settings"
+  
+If question is brief (< 5 words):
+  - Warn: "Brief question detected. This may limit research quality."
+  - Offer clarification assistance with smart suggestions
 ```
 
 ### 2. Generate Session ID and Paths
@@ -145,11 +222,14 @@ Set SOURCES_DIR as: sources/
 Set USER_DIR as: current working directory
 ```
 
-### 3. Check for Active Session
+### 3. Smart Session Management
 ```
 Use Read tool to check: .deep-research/.current-research
-If file exists and not empty, warn user about existing active session
-Ask: "Continue existing session or start new one?"
+Auto-validate session integrity and clean orphaned references
+If active session found:
+  - Display session summary with key metrics
+  - Smart default: "continue" for recent sessions, "new" for old ones
+  - Provide clear options with reasoning
 ```
 
 ### 4. Create Session Directory and Detect Sources
@@ -195,32 +275,69 @@ Before creating the research plan, I can proceed with smart defaults or you can 
 **Default if unknown:** Interactive HTML report with citations
 ```
 
-### 7. Ask Clarifying Questions
+### 7. Smart Clarifying Questions with Progressive Disclosure
 ```
-Display: "Before creating the research plan, I can proceed with smart defaults or you can answer these questions for more tailored results. Type 'skip' to use all defaults."
+// Modern conversational pattern with adaptive questioning
+Display: "🚀 Let's tailor your research approach! I can proceed with smart defaults or customize the approach."
 
-Ask Q1: "Is there a specific time period or geographic region you'd like me to focus on?"
-Display default: "(Default: No - will search all time periods and regions)"
-Wait for response
+QUESTION_MODE = prompt_choice([
+  "Quick Start (use smart defaults)", 
+  "Custom Setup (3 quick questions)",
+  "Advanced Setup (5 detailed questions)"
+], default="Quick Start")
 
-If user types "skip":
-  - Use all default values
-  - Proceed to planning
-Else:
-  - Record Q1 answer
-  - Ask Q2: "What level of technical depth is appropriate for your needs?"
-  - Display default: "(Default: Medium - balanced technical and accessible content)"
-  - Continue for Q3-Q5
+switch QUESTION_MODE:
+  case "Quick Start":
+    - Apply smart defaults based on research question keywords
+    - Detect domain (tech/business/academic/etc.) from question
+    - Auto-select appropriate depth and timeframe
+    - Display: "✅ Applied smart defaults for [detected_domain] research"
+    
+  case "Custom Setup":
+    - Ask only 3 most impactful questions:
+      Q1: "Time focus? (Recent/Historical/All) [Default: Recent]"
+      Q2: "Audience? (General/Expert/Academic) [Default: General]" 
+      Q3: "Scope? (Focused/Comprehensive) [Default: Focused]"
+    
+  case "Advanced Setup":
+    - Present all 5 questions with smart defaults
+    - Include reasoning for each default choice
+    - Allow skip-ahead at any point
 
-After all questions answered:
-  - Save answers to: [SESSION_ID]-clarifying-answers.md
-  - Update metadata.json with user preferences
+// Auto-learning: Store user choices for future smart defaults
+save_user_preferences(QUESTION_MODE, answers)
 ```
 
-### 8. Execute Phase 1 Planning
+### 8. Execute Phase 1 Planning with Sequential Thinking
 ```
-## ultrathink
-Planning a comprehensive research strategy requires deep analytical thinking to break down complex questions into specific, actionable sub-questions that collectively address the main research question.
+// Use Sequential Thinking MCP for deep research planning
+start_thinking("Research Planning for: " + RESEARCH_QUESTION)
+
+continue_thinking("""
+I need to create a comprehensive research strategy that breaks down this complex question into specific, actionable sub-questions. Let me think through this systematically:
+
+1. First, let me analyze the core question and identify its key components
+2. Consider what aspects need investigation from multiple angles  
+3. Think about potential perspectives and stakeholder viewpoints
+4. Consider temporal aspects (historical context, current state, future implications)
+5. Identify methodological approaches needed
+6. Plan for synthesis of findings
+
+Based on the user preferences: """ + USER_PREFERENCES + """
+And the detected research domain: """ + RESEARCH_DOMAIN + """
+""")
+
+continue_thinking("Now let me decompose this into 5-7 specific sub-questions that will collectively address the main research question...")
+
+PLANNING_INSIGHTS = finish_thinking()
+
+// Store planning insights in memory for future improvement
+create_memory_entry("planning_methodology", {
+    question: RESEARCH_QUESTION,
+    domain: RESEARCH_DOMAIN,
+    insights: PLANNING_INSIGHTS,
+    user_preferences: USER_PREFERENCES
+})
 
 Transform into expert research strategist specializing in decomposing complex questions into actionable research plans.
 Your role is to create a comprehensive research strategy WITHOUT conducting any actual research yet.

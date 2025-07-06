@@ -1,15 +1,28 @@
 ---
-description: Display overview of all research sessions and allow selection for continuation
+description: Enhanced session directory with analytics, smart filtering, and optimization recommendations
 allowed-tools:
   - Read
   - Write
   - Bash
   - LS
+  - mcp__memory__create_memory
+  - mcp__memory__search_memory
+  - mcp__memory__update_memory
+  - mcp__sequentialthinking__start_thinking
+  - mcp__sequentialthinking__continue_thinking
+  - mcp__sequentialthinking__finish_thinking
 ---
 
-# List All Research Sessions
+# Enhanced Session Directory
 
-Display overview of all research sessions (active, completed, and paused).
+Display intelligent overview of all research sessions with smart analytics.
+
+## 🚀 Enhanced Directory Features
+- **Smart Analytics**: Session performance metrics and quality scoring with historical comparison
+- **Memory-Powered Insights**: Pattern recognition from persistent research history
+- **Intelligent Filtering**: Auto-categorization with optimization suggestions
+- **Sequential Analysis**: Deep thinking for workspace optimization and session prioritization
+- **Quick Actions**: Smart recommendations for session management based on learned patterns
 
 ## EXECUTION INSTRUCTIONS
 

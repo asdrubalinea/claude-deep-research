@@ -1,16 +1,30 @@
 ---
-description: Display detailed information about the active research session and suggest next actions
+description: Enhanced session analytics with health monitoring, predictive insights, and optimization recommendations
 allowed-tools:
   - Read
   - Write
   - Bash
   - TodoWrite
   - LS
+  - mcp__memory__create_memory
+  - mcp__memory__search_memory
+  - mcp__memory__update_memory
+  - mcp__sequentialthinking__start_thinking
+  - mcp__sequentialthinking__continue_thinking
+  - mcp__sequentialthinking__finish_thinking
 ---
 
-# View Current Research Session
+# Enhanced Session Analytics
 
-Display detailed information about the active research session.
+Display comprehensive session information with intelligent insights.
+
+## 🚀 Enhanced Analytics
+- **Health Monitoring**: Real-time session health and performance metrics
+- **Predictive Insights**: Completion time and quality predictions powered by historical patterns
+- **Memory-Enhanced Analysis**: Learn from past sessions to improve recommendations
+- **Sequential Assessment**: Deep thinking for complex session optimization decisions
+- **Coverage Analysis**: Automated gap identification and recommendations
+- **Performance Optimization**: Velocity tracking and efficiency suggestions
 
 ## EXECUTION INSTRUCTIONS
 
@@ -59,22 +73,30 @@ FILE_STATUS = check_files_parallel([
 ])
 ```
 
-### Step 4: Collect Additional Session Data
+### Step 4: Collect Session Data with Health Monitoring
 ```
-// Count actual source files
+// Enhanced health monitoring with predictive insights
 SOURCE_COUNT = 0
 SOURCE_FILES = []
+HEALTH_METRICS = {}
+
 if FILE_STATUS.sources_dir:
     SOURCE_FILES = list_files(SOURCES_DIR, "*.md")
     SOURCE_COUNT = count(SOURCE_FILES)
+    HEALTH_METRICS.source_quality = assess_source_quality(SOURCE_FILES)
+    HEALTH_METRICS.coverage_gaps = identify_coverage_gaps(SOURCE_FILES, METADATA)
 
-// Calculate time metrics
+// Advanced time and progress analytics
 CURRENT_TIME = current_timestamp()
 SESSION_DURATION = time_diff(METADATA.started, CURRENT_TIME)
 LAST_ACTIVITY = time_diff(METADATA.lastUpdated, CURRENT_TIME)
+HEALTH_METRICS.velocity = calculate_research_velocity(METADATA)
+HEALTH_METRICS.completion_prediction = predict_completion_time(METADATA, HEALTH_METRICS.velocity)
 
-// Determine current phase status
+// Intelligent phase status with recommendations
 PHASE_STATUS = determine_phase_status(METADATA.phase, METADATA.progress)
+HEALTH_METRICS.phase_health = assess_phase_health(PHASE_STATUS, SESSION_DURATION)
+HEALTH_METRICS.recommendations = generate_health_recommendations(HEALTH_METRICS)
 ```
 
 ### Step 5: Display Comprehensive Session Information

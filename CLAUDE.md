@@ -4,168 +4,97 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a Deep Research System that transforms Claude Code into an advanced research agent using a four-phase workflow with human checkpoints. The system now features **slash commands** for streamlined workflow management, eliminating the need for manual prompt copying.
+This is the Claude Deep Research System - a sophisticated research framework that transforms Claude Code into an advanced research agent capable of conducting systematic, multi-phase research with proper citations and structured output.
 
-### Four-Phase Research Methodology:
-1. **Phase 1**: Research Planning - Decompose complex questions into actionable sub-questions
-2. **Phase 2**: Information Gathering - Systematically search and save sources
-3. **Phase 3**: Analysis - Analyze sources and create findings
-4. **Phase 4**: Report Generation - Create interactive HTML reports with citations
+## System Architecture
 
-### Key Improvements:
-- **Command-driven interface** - No more manual prompt copying
-- **Session management** - Resumable research across multiple conversations
-- **Progress tracking** - Comprehensive metadata and state management
-- **Quality assurance** - Automated source evaluation and citation management
-- **Enhanced AI capabilities** - Automatic ultrathink for complex decisions, parallel search operations
-- **Interactive clarifying questions** - Actively asks optional questions with smart defaults at each phase (fixed in latest version)
-- **Best practices compliance** - Follows Claude Code best practices with proper metadata and tool descriptions
+### Core Components
 
-## Common Commands
+**Slash Commands Structure**: The system operates through 5 slash commands located in the `commands/` directory:
+- `research-start.md` - Initiates new research sessions with automated planning
+- `research-status.md` - Continues current research and checks progress  
+- `research-current.md` - Displays detailed active session information
+- `research-list.md` - Lists all research sessions
+- `research-end.md` - Finalizes and completes research
 
-### Research Workflow Commands
-The Deep Research System now uses slash commands for streamlined workflow management:
+**Four-Phase Research Methodology**:
+1. **Planning Phase**: Breaks research questions into 5-7 focused sub-questions
+2. **Information Gathering Phase**: Collects 15-25 high-quality sources with tier classification
+3. **Analysis Phase**: Synthesizes findings from all sources
+4. **Report Generation Phase**: Creates interactive HTML reports with citations
 
-1. **`/research-start [your research question]`** - Initiates a new research session with automated planning
-2. **`/research-status`** - Checks progress and continues from where you left off
-3. **`/research-current`** - Shows detailed view of your active research session
-4. **`/research-list`** - Lists all research sessions (active, completed, paused)
-5. **`/research-end`** - Finalizes and completes your research session
+### Session Management
 
-### Self-Contained Commands
-The slash commands are now fully self-contained with all phase methodologies embedded directly in the command files. This ensures they work properly when copied to ~/.claude/commands without requiring external prompt files.
-
-### File Management
-- Research sessions are saved in `sessions/YYYY-MM-DD-HHMM-topic-slug/`
-- Metadata tracking via `metadata.json` in each session directory
-- Global state management with `sessions/.current-research` file
-- Use TodoWrite to track progress through the four phases (automated by commands)
-- Save artifacts using Claude's artifact feature for final reports
-
-## Architecture and File Structure
-
-### Core System Components
-
+**Session Structure**: Each research session creates:
 ```
-deep-research/
-├── commands/                   # Slash command implementations
-│   ├── research-start.md      # /research-start command
-│   ├── research-status.md     # /research-status command
-│   ├── research-current.md    # /research-current command
-│   ├── research-list.md       # /research-list command
-│   └── research-end.md        # /research-end command
-├── sessions/                   # Research session storage
-│   ├── .current-research      # Global state file
-│   └── YYYY-MM-DD-HHMM-slug/  # Individual research sessions
-│       ├── metadata.json      # Session state and progress
-│       ├── 01-plan.md         # Research plan
-│       ├── 02-sources/        # Source collection
-│       │   ├── source-001-*.md
-│       │   └── source-inventory.md
-│       ├── 03-findings.md     # Analysis results
-│       └── 04-report.html     # Final report
-├── templates/                  # Internal templates for generation
-│   ├── plan-template.md       # Research plan template
-│   ├── source-template.md     # Source file template
-│   ├── findings-template.md   # Analysis template
-│   └── report-template.html   # Report template
-├── requirements/              # System requirements documentation
-└── CLAUDE.md                  # This file
+.deep-research/sessions/[SESSION_ID]/metadata.json  # Session state tracking
+[SESSION_ID]-plan.md                               # Research plan
+[SESSION_ID]-findings.md                           # Analysis results  
+[SESSION_ID]-report.html                           # Final report
+sources/                                           # Shared source collection
 ```
 
-### Key Architectural Patterns
+**Session Identification**: Uses format `YYYY-MM-DD-HHMM-topic-slug` for unique session IDs.
 
-1. **Phase-Based Workflow**: Each phase has a dedicated prompt template that sets Claude's role and provides specific instructions. Human checkpoints between phases ensure quality control.
+**Global State**: Managed through `.deep-research/.current-research` file that tracks the active session.
 
-2. **Structured Output**: All research outputs follow consistent naming conventions and directory structures to maintain organization across multiple research sessions.
+## Development Commands
 
-3. **Web Content Fetching**: Uses WebFetch tool for gathering online sources, with ethical guidelines for respecting robots.txt, rate limits, and copyright.
-
-4. **Citation Management**: Strict citation standards ensure all claims are verifiable with proper attribution following academic formatting.
-
-5. **Multi-Modal Synthesis**: System can analyze text, images, charts, and data from various sources to create comprehensive reports.
-
-6. **Enhanced Performance**: 
-   - Automatic ultrathink activation for complex decision points (research planning, source evaluation, analysis synthesis)
-   - Parallel search operations (up to 5 concurrent WebSearch/WebFetch calls)
-   - Parallel file reading for analysis phase
-   - Optimized command execution with proper metadata
-
-7. **User Experience**: 
-   - Optional clarifying questions at each phase start with smart defaults
-   - Improved error handling and user guidance
-   - Command metadata with descriptions and allowed-tools lists
-
-## Important Implementation Details
-
-### When Starting Research
-1. Use `/research-start [your research question]` to automatically:
-   - Create session directory structure: `sessions/YYYY-MM-DD-HHMM-topic-slug/`
-   - Generate metadata.json for state tracking
-   - **Ask Phase 1 clarifying questions** (time period, technical depth, source priorities, etc.)
-   - Execute Phase 1 planning with sub-question decomposition
-   - Set up TodoWrite to track the four phases
-   - Save the research plan before proceeding to Phase 2
-2. Approve the research plan when prompted
-3. Use `/research-status` to continue to Phase 2 (Information Gathering)
-
-### During Information Gathering (Phase 2)
-- Use `/research-status` to continue systematic source collection
-- **Phase 2 clarifying questions asked**: Academic vs industry sources, regional focus, paywall preferences, publication dates
-- System automatically creates `02-sources/` subdirectory
-- **Parallel search operations**: Up to 5 concurrent WebSearch/WebFetch calls for efficiency
-- **Automatic ultrathink**: Applied for source evaluation and search strategy decisions
-- Sources are named as `source-NNN-descriptive-title.md` (e.g., source-001-openai-announcement.md)
-- System maintains `source-inventory.md` file with quality tiers and coverage assessment
-- Respect ethical web research guidelines from `RESEARCH-GUIDELINES.md`
-- Progress tracked in metadata.json (sources collected vs. targeted)
-
-### For Analysis (Phase 3)
-- Use `/research-status` to transition to analysis phase
-- **Phase 3 clarifying questions asked**: Recent vs historical focus, technical depth level, consensus vs disagreement highlighting
-- **Parallel file reading**: Reads all sources from `02-sources/` directory simultaneously
-- **Automatic ultrathink**: Applied for pattern recognition and synthesis decisions
-- Creates comprehensive findings document at `03-findings.md`
-- Includes proper citations for all claims
-- Analyzes each sub-question systematically
-- Identifies cross-cutting themes and patterns
-
-### When Generating Reports (Phase 4)
-- Use `/research-status` to transition to report generation
-- **Phase 4 clarifying questions asked**: Primary audience, practical vs theoretical emphasis, interactive element preferences
-- System generates interactive HTML report using professional template from `templates/report-template.html`
-- **Streamlined template**: HTML template extracted to separate file for maintainability
-- Includes all citations with proper formatting
-- Creates presentation-ready output with:
-  - Executive summary and key findings
-  - Detailed analysis by sub-question
-  - Cross-cutting themes and insights
-  - Comprehensive citation list
-  - Research methodology and limitations
-- Use `/research-end` to finalize and complete the session
-
-### Quality Standards
-- Follow source evaluation tiers (Tier 1: peer-reviewed journals, government data; Tier 2: professional publications; Tier 3: use with caution)
-- Implement cross-referencing for controversial claims
-- Present multiple perspectives on disputed topics
-- Acknowledge limitations and gaps in available information
-
-## Research Guidelines Summary
-
-### Ethical Principles
-- **Respect robots.txt** and website terms of service
-- **Avoid rapid requests** to the same domain
-- **Provide proper attribution** for all sources
-- **Do not bypass paywalls** or access restrictions
-- **Focus on publicly available** information
-
-### Citation Format
-```
-[Author Last, First]. (Year). "Article Title." *Publication Name*. URL. Accessed: [Date].
+**Installation**: Copy commands to Claude Code directory:
+```bash
+cp commands/* ~/.claude/commands
 ```
 
-### Handling Edge Cases
-- **Conflicting sources**: Document all viewpoints and note credibility
-- **Information gaps**: Acknowledge limitations and expand search if needed  
-- **Biased sources**: Identify bias and seek contrasting perspectives
-- **Access limitations**: Note what couldn't be accessed and why
+**Usage**: Research sessions are initiated with:
+```bash
+/research-start [your research question]
+```
+
+## Key Implementation Details
+
+### Metadata Management
+- Sessions tracked via comprehensive JSON metadata in `.deep-research/sessions/`
+- Progress tracking through four-phase status system
+- Source inventory with tier classification (Tier 1-3 quality levels)
+
+### Source Collection Strategy
+- Systematic search using WebSearch and WebFetch tools
+- Source validation with credibility assessment
+- Proper citation formatting and reference management
+
+### Quality Control
+- Human checkpoints between each phase
+- Clarifying questions with smart defaults
+- User approval required before phase transitions
+
+### File Organization
+- Consistent naming conventions with session ID prefixes
+- Structured directory hierarchy
+- Resumable sessions across conversations
+
+## Important Notes
+
+- This system requires no build processes, tests, or compilation
+- All functionality is delivered through Claude Code slash commands
+- Sessions are stateful and resumable
+- The system emphasizes research quality over speed
+- Proper academic citation standards are maintained throughout
+
+## Research Topics Supported
+
+- Technology trends and assessments
+- Scientific literature reviews  
+- Market analysis and competitor research
+- Policy and regulatory analysis
+- Historical investigations
+- Complex multi-faceted research questions
+
+## Session Workflow
+
+1. User initiates research with specific question
+2. System asks optional clarifying questions (can be skipped)
+3. Planning phase creates structured research plan
+4. Information gathering phase collects quality sources
+5. Analysis phase synthesizes findings
+6. Report generation creates final deliverable
+7. Session can be paused/resumed at any time

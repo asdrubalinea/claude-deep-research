@@ -1,16 +1,29 @@
 ---
-description: Finalize and close the current research session with validation and archiving
+description: Enhanced research finalization with learning insights, quality analysis, and automated optimization
 allowed-tools:
   - Read
   - Write
   - Bash
   - TodoWrite
   - LS
+  - mcp__memory__create_memory
+  - mcp__memory__search_memory
+  - mcp__memory__update_memory
+  - mcp__sequentialthinking__start_thinking
+  - mcp__sequentialthinking__continue_thinking
+  - mcp__sequentialthinking__finish_thinking
 ---
 
-# End Research Session
+# Enhanced Research Finalization
 
-Finalize and close the current research session.
+Finalize research session with intelligent analysis and learning insights.
+
+## 🚀 Enhanced Finalization
+- **Learning Insights**: Session performance analysis stored in persistent memory for future improvement
+- **Quality Assessment**: Automated research quality scoring and recommendations
+- **Pattern Recognition**: Research methodology optimization stored across sessions
+- **Sequential Analysis**: Deep thinking for comprehensive session evaluation and learning extraction
+- **Smart Archival**: Intelligent organization and optimization of research data
 
 ## EXECUTION INSTRUCTIONS
 
@@ -105,9 +118,45 @@ delete_file(CURRENT_SESSION_FILE)
 update_todo_completion()
 ```
 
-### Step 9: Display Final Summary
+### Step 9: Generate Learning Insights with Memory & Sequential Thinking
 ```
-display_finalization_summary(FINALIZED_METADATA, SESSION_DIR)
+// Use Sequential Thinking for comprehensive session analysis
+start_thinking("Analyzing session performance and extracting learnings")
+
+continue_thinking("""
+Let me systematically analyze this research session:
+1. What worked well in terms of methodology and approach?
+2. Which search strategies yielded the highest quality sources?
+3. What patterns can I identify in user preferences and decisions?
+4. How efficient was the research process compared to similar sessions?
+5. What improvements could be made for future sessions?
+6. What domain-specific insights can inform future research in this area?
+""")
+
+SESSION_ANALYSIS = finish_thinking()
+
+// Extract learnings and store in persistent memory
+LEARNING_INSIGHTS = generate_session_insights(FINALIZED_METADATA, SESSION_DIR, SESSION_ANALYSIS)
+IMPROVEMENT_SUGGESTIONS = analyze_research_quality(LEARNING_INSIGHTS)
+FUTURE_RECOMMENDATIONS = extract_methodology_learnings(SESSION_DIR)
+
+// Store comprehensive learnings in memory for future sessions
+create_memory_entry("session_completion", {
+    session_id: SESSION_ID,
+    domain: METADATA.research_domain,
+    quality_score: calculate_quality_score(LEARNING_INSIGHTS),
+    successful_strategies: IMPROVEMENT_SUGGESTIONS.successful_patterns,
+    lessons_learned: SESSION_ANALYSIS,
+    user_preferences: extract_user_preferences(METADATA)
+})
+
+update_memory("research_patterns", {
+    domain: METADATA.research_domain,
+    methodology_improvements: FUTURE_RECOMMENDATIONS
+})
+
+save_learning_insights(LEARNING_INSIGHTS, SESSION_DIR)
+display_finalization_summary(FINALIZED_METADATA, SESSION_DIR, LEARNING_INSIGHTS)
 ```
 
 ## CLAUDE CODE IMPLEMENTATION
