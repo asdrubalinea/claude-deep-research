@@ -1,0 +1,54 @@
+{
+  "id": "2025-07-06-1536-amd-gpu-gaming-ml-budget",
+  "title": "Best AMD GPU for Gaming and Machine Learning Under $1000",
+  "question": "research the best AMD GPU both for gaming and for machine learning for under 1000 USD",
+  "started": "2025-07-06T15:36:00Z",
+  "lastUpdated": "2025-07-06T15:36:00Z",
+  "status": "completed",
+  "phase": "report",
+  "progress": {
+    "planning": {
+      "status": "completed",
+      "subQuestions": 7,
+      "planApproved": true
+    },
+    "gathering": {
+      "status": "completed",
+      "sourcesCollected": 10,
+      "sourcesTargeted": 10
+    },
+    "analysis": {
+      "status": "completed",
+      "findingsGenerated": true
+    },
+    "report": {
+      "status": "completed",
+      "format": "html"
+    }
+  },
+  "research": {
+    "subQuestions": [],
+    "sources": {
+      "total": 0,
+      "byType": {},
+      "byTier": {}
+    },
+    "coverage": {
+      "wellCovered": [],
+      "gaps": [],
+      "biasesNoted": []
+    }
+  },
+  "files": {
+    "planFile": "2025-07-06-1536-amd-gpu-gaming-ml-budget-plan.md",
+    "sourcesDir": "sources/",
+    "findingsFile": "2025-07-06-1536-amd-gpu-gaming-ml-budget-findings.md",
+    "reportFile": "2025-07-06-1536-amd-gpu-gaming-ml-budget-report.html"
+  },
+  "metrics": {
+    "totalTimeSpent": "0h 0m",
+    "sessionsCount": 1,
+    "wordsGenerated": 0,
+    "citationsCount": 0
+  }
+}
